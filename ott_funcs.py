@@ -542,3 +542,20 @@ def vswf(n, m, kr, theta, phi, htype=0):
     return M[0], N[0], M[1], N[1], M[2], N[2]
     #return M, N, M2, N2, M3, N3
 
+# % /* hankel evaluates hankel function of the first kind,   */
+# % /* order zero, and its derivative for complex argument z */
+# % void hankel( complex double z, complex double *h0, complex double *h0p )
+def hankel0(z):
+    return scipy.special.hankel1(0, z). scipy.special.h1vp(0, z, 1)
+
+# bessel evaluates the zero-order bessel function */
+# and its derivative for complex argument z. */
+# void bessel( complex double z, complex double *j0, complex double *j0p )
+def bessel0(z):
+    #   int k, i, ib, iz, miz;
+    #   static int m[101], init = FALSE;
+    #   static double a1[25], a2[25];
+    #   double tst, zms;
+    #   complex double p0z, p1z, q0z, q1z, zi, zi2, zk, cz, sz, j0x, j0px;
+
+    return scipy.special.j0(z), scipy.special.jvp(0, z, 1)

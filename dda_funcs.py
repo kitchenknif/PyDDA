@@ -168,7 +168,7 @@ def E_inc_vswf(n, m, r_sp):
         Ei_TM[3*(j-1) + 2] = E_TM[2, j]
 
 
-def E_sca_FF(k,r,P,r_E):
+def E_sca_FF(k, r, P, r_E):
     # k: wave number
     # r: dipole coordinates (N x 3 matrix)
     # P: polarizations (vector of length 3N; Px1,Py1,Pz1 ... PxN,PyN,PzN)
@@ -190,7 +190,7 @@ def E_sca_FF(k,r,P,r_E):
     return E
 
 
-def interaction_A(k,r,alph,blockdiag=True):
+def interaction_A(k, r, alph, blockdiag = True):
     #global A
 
     N = r.shape[0]
@@ -198,8 +198,8 @@ def interaction_A(k,r,alph,blockdiag=True):
     # subj = 0;
 
     for j in range(N):
-        #subj = subj + 1;
-        crow = 3*j #3*(j-1)
+        # subj = subj + 1
+        crow = 3*j  # 3*(j-1)
         Aj = calc_Aj(k, r, alph, j, blockdiag)
         A[crow:crow+3, :] = Aj
 
