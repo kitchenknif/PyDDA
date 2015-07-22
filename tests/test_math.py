@@ -153,7 +153,15 @@ class TestMath(TestCase):
             self.fail()
 
     def test_hankel0(self):
-       self.fail()
+        z = 3*numpy.pi/7 +9.88*1j
+        x = hankel0(z)
+        if not (numpy.abs(numpy.asarray(x) - [1.2622e-05 - 2.0139e-06j, 2.0300e-06 + 1.3248e-05j]) < 0.001).all():
+            print(x)
+            self.fail()
 
     def test_bessel0(self):
-        self.fail()
+        z = 3*numpy.pi/7 +9.88*1j
+        x = bessel0(z)
+        if not (numpy.abs(numpy.asarray(x) - [7.2467e+02 - 2.3933e+03j, -2.2764e+03 - 6.7054e+02j]) < 0.1).all():
+            print(x)
+            self.fail()

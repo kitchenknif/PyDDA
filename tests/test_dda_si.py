@@ -1,5 +1,5 @@
 from unittest import TestCase
-from ott_funcs import *
+from dda_si_funcs import *
 from numpy import *
 __author__ = 'Kryosugarra'
 
@@ -12,7 +12,12 @@ class TestDDA_SI(TestCase):
         self.fail()
 
     def test_Fresnel_coeff_n(self):
-        self.fail()
+        n = 1.3
+        theta = pi/7
+
+        r_te, r_tm = Fresnel_coeff_n(n, theta)
+        if not ((r_te - (-0.1526)) < 0.001 and (r_tm - (-0.1081))):
+            self.fail()
 
     def test_evanescent_k_e(self):
         self.fail()
