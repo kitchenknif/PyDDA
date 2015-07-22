@@ -151,3 +151,9 @@ class TestMath(TestCase):
         if not numpy.abs(N3 - (-0.0155 - 0.0113j)) < 0.001:
             print("N3", numpy.abs(N3 - -0.0155 - 0.0113j))
             self.fail()
+
+    def test_hankel0(self):
+       self.fail()
+
+    def test_bessel0(self):
+        self.fail()

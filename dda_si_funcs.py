@@ -7,7 +7,6 @@ from dda_si_integration_funcs import *
 # % "Discrete-dipole approximation for scattering by features on surfaces
 # % by means of a two-dimensional fast Fourier transform technique"
 # % J. Opt. Soc. Am. A 14, 3026-3036 (1997)
-
 def reflection_Rjk(k1,k2,r_j,r_k,S):
     # % k1 = wave number in bottom medium (e.g. substrate)
     # % k2 = wave number in top medium (e.g. air/vacuum)
@@ -22,26 +21,26 @@ def reflection_Rjk(k1,k2,r_j,r_k,S):
     k0 = 2*numpy.pi
 
     #% (A9d)
-    rI_k2j = [r_j[1]-r_k[1], r_j[2]-r_k[2], r_j[3]+r_k[3]]
+    rI_k2j = [r_j[1]-r_k[1], r_j[2]-r_k[2], r_j[2]+r_k[2]]
     rIjk = numpy.linalg.norm(rI_k2j)
 
     # % x,y,z components vectors (A9a)
-    rhat_x = rI_k2j[1]/rIjk
-    rhat_y = rI_k2j[2]/rIjk
-    rhat_z = rI_k2j[3]/rIjk
+    rhat_x = rI_k2j[0]/rIjk
+    rhat_y = rI_k2j[1]/rIjk
+    rhat_z = rI_k2j[2]/rIjk
 
     # % scalars (A9b) & (A9c)
     beta = (1 - 1*pow_m2(k0*rIjk) + 1j*pow_m1(k0*rIjk))
     gamma = -(1 - 3*pow_m2(k0*rIjk) + 1j*3*pow_m1(k0*rIjk))
 
-    zph = r_j(3)+r_k(3)
-    rho = numpy.sqrt(pow2(r_j(1) - r_k(1)) + pow2(r_j(2) - r_k(2)))
+    zph = r_j[2]+r_k[2]
+    rho = numpy.sqrt(pow2(r_j[1] - r_k[0]) + pow2(r_j[1] - r_k[1]))
 
     # % assign precalculated Sommerfeld essential integrals
-    IV_rho = S[1]
-    IV_z = S[2]
-    IH_rho = S[3]
-    IH_phi = S[4]
+    IV_rho = S[0]
+    IV_z = S[1]
+    IH_rho = S[2]
+    IH_phi = S[3]
     #
     S11 = pow2(rhat_x)*IH_rho - pow2(rhat_y)*IH_phi
     S12 = rhat_x*rhat_y*(IH_rho + IH_phi)
@@ -53,9 +52,9 @@ def reflection_Rjk(k1,k2,r_j,r_k,S):
     S32 = -rhat_y*IV_rho
     S33 = IV_z
 
-    Sjk = [[S11, S12, S13],
+    Sjk = numpy.asarray([[S11, S12, S13],
            [S21, S22, S23],
-           [S31, S32, S33]]
+           [S31, S32, S33]])
 
     G11 = -(beta + gamma*pow2(rhat_x))
     G12 = -gamma*rhat_x*rhat_y
@@ -67,9 +66,9 @@ def reflection_Rjk(k1,k2,r_j,r_k,S):
     G32 = -gamma*rhat_z*rhat_y
     G33 = beta + gamma*pow2(rhat_z)
 
-    Gjk = [[G11, G12, G13],
+    Gjk = numpy.asarray([[G11, G12, G13],
            [G21, G22, G23],
-           [G31, G32, G33]]
+           [G31, G32, G33]])
     # % to be consistent with the Draine and Flatau interraction matrix
     # % formulation we omit the (4*pi*ep)^-1 factor
     # % (A8)
@@ -108,7 +107,7 @@ def interaction_AR(k1,k2,r,alph):
 
     k0 = 2*numpy.pi
     N = r[:,1].size
-    AR = numpy.zeros([3*N, 3*N])
+    AR = numpy.zeros([3*N, 3*N], dtype=numpy.complex64)
     I = numpy.eye(3)
 
     S, nS = precalc_Somm(r,k1,k2)
@@ -129,23 +128,23 @@ def interaction_AR(k1,k2,r,alph):
                 Ajk = numpy.exp(1j*k0*rjk) / rjk*(pow2(k0)*(rjkrjk - I) + (1j*k0*rjk-1)/pow2(rjk)*(3*rjkrjk - I))  # %Draine & Flatau
 
                 # % beta, gamma see Schmehl's thesis (1.27)
-                rjk_x = rk_to_rj[1]/rjk
-                rjk_y = rk_to_rj[2]/rjk
-                rjk_z = rk_to_rj[3]/rjk
+                rjk_x = rk_to_rj[0]/rjk
+                rjk_y = rk_to_rj[1]/rjk
+                rjk_z = rk_to_rj[2]/rjk
                 beta = (1 - pow_m2(k0*rjk) + 1j*pow_m1(k0*rjk))
                 gamma = -(1 - 3*pow_m2(k0*rjk) + 1j*3*pow_m1(k0*rjk))
-                Ajk_BG = -numpy.exp(1j*k0*rjk)/rjk*pow2(k0)*[
+                Ajk_BG = -numpy.exp(1j*k0*rjk)/rjk*pow2(k0)*numpy.asarray([
                     [(beta + gamma*pow2(rjk_x)),    (gamma*rjk_x*rjk_y),        (gamma*rjk_x*rjk_z)],
                     [(gamma*rjk_y*rjk_x),           (beta + gamma*pow2(rjk_y)), (gamma*rjk_y*rjk_z)],
                     [(gamma*rjk_z*rjk_x),           (gamma*rjk_z*rjk_y),        (beta + gamma*pow2(rjk_z))]
-                ]
+                ])
 
-                AR[jj*3+1:(jj+1)*3,kk*3+1:(kk+1)*3] = (Ajk + Rjk)
+                AR[jj*3+0:(jj+1)*3,kk*3+0:(kk+1)*3] = (Ajk + Rjk)
             else:
-                AR[(jj)*3+1,(kk)*3+0] = 1/alph((jj)*3+0)
-                AR[(jj)*3+2,(kk)*3+1] = 1/alph((jj)*3+1)
-                AR[(jj)*3+3,(kk)*3+2] = 1/alph((jj)*3+2)
-                AR[(jj)*3+1:(jj+1)*3,(kk)*3+1:(kk-1)*3] = AR[(jj)*3+1:(jj+1)*3, kk*3+1:(kk+1)*3] + Rjk
+                AR[(jj)*3+0,(kk)*3+0] = 1/alph[jj*3+0]
+                AR[(jj)*3+1,(kk)*3+1] = 1/alph[jj*3+1]
+                AR[(jj)*3+2,(kk)*3+2] = 1/alph[jj*3+2]
+                AR[(jj)*3+0:(jj+1)*3,(kk)*3+0:(kk+1)*3] = AR[(jj)*3+0:(jj+1)*3, kk*3+0:(kk+1)*3] + Rjk
             iS += 1
     return AR
 
@@ -157,7 +156,7 @@ def Fresnel_coeff_n(n_r,theta):
 
     pow2 = misc.power_function(2)
 
-    R_TM = (numpy.sqrt(1 - (numpy.sin(theta)/n_r)^2) - n_r*numpy.cos(theta)) / (numpy.sqrt(1 - pow2((numpy.sin(theta)/n_r))) + n_r*numpy.cos(theta))
+    R_TM = (numpy.sqrt(1 - pow2(numpy.sin(theta)/n_r)) - n_r*numpy.cos(theta)) / (numpy.sqrt(1 - pow2((numpy.sin(theta)/n_r))) + n_r*numpy.cos(theta))
     R_TE = (numpy.cos(theta) - n_r*numpy.sqrt(1 - pow2(numpy.sin(theta)/n_r))) / (numpy.cos(theta) + n_r*numpy.sqrt(1 - pow2(numpy.sin(theta)/n_r)))
 
     return R_TE,R_TM

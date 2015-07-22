@@ -36,7 +36,7 @@ def gshank(start,dela,suminc,nans,seed,ibk,bk,delb,zph,rho,k1,k2,jh): #return su
     else:
         ibx=0
 
-
+    brk = False #TODO: Where should it be assigned?
     # for( i = 0; i < nans; i++ )
     # #   ans2[i]=seed[i];
     ans2 = seed
@@ -196,9 +196,9 @@ def rom1(n,nx,zph,rho,k1,k2,a,b,jh):
     # % static complex double g1[6], g2[6], g3[6], g4[6], g5[6], t01[6], t10[6], t20[6];
     dz = 0
     dzot = 0
-    t01 = numpy.zeros([n])
-    t10 = numpy.zeros([n])
-    t20 = numpy.zeros([n])
+    t01 = numpy.zeros([n], dtype=numpy.complex64)
+    t10 = numpy.zeros([n], dtype=numpy.complex64)
+    t20 = numpy.zeros([n], dtype=numpy.complex64)
 
     # % constants
     NM = 131072
@@ -451,7 +451,7 @@ def saoa(t,zph,rho,k1,k2,a,b,jh):
     den1 = 1/(cgam1 + cgam2) - cksm/cgam2
     com = dxl*xl*numpy.exp(-cgam2*zph)
 
-    answer = numpy.zeros([5])
+    answer = numpy.zeros([6], dtype=numpy.complex64)
 
     answer[5] = com*b0*den1/k1  # ans[5] = com*b0*den1/ck1
     com = com * den2  #com *= den2
@@ -518,7 +518,7 @@ def evlua(zph, rho, k1, k2):
 
             delta = .2*numpy.pi*delt
             answer = gshank(b,delta,answer,6,suminc,0,b,b,zph,rho,k1,k2,jh) # gshank(b,delta,ans,6,sum,0,b,b);
-            answer[6] = answer(6)*k1 # ans[5] *= k1;
+            answer[5] = answer[5]*k1 # ans[5] *= k1;
 
         if conj_e:
             # conjugate since nec uses exp(+jwt)
@@ -652,7 +652,7 @@ def precalc_Somm(r,k1,k2, use_mex=False):
         for k in range(N):
             r_j = r[j, :]
             r_k = r[k, :]
-            zph = r_j[3] + r_k[3]
+            zph = r_j[2] + r_k[2]
             rho = numpy.sqrt(pow2(r_j[1] - r_k[1]) + pow2(r_j[2] - r_k[2]))
 
             # round to 4 decimal places
@@ -663,10 +663,10 @@ def precalc_Somm(r,k1,k2, use_mex=False):
             ix = ix+1
 
     zr0 = zr
-    zr, m, n = numpy.unique(zr, 'rows')
+    zr, m, n = numpy.unique(zr, return_index=True, return_inverse=True)
     L = zr.shape[0]
 
-    S = numpy.zeros([L,4])
+    S = numpy.zeros([L,4], dtype=numpy.complex64)
 
     for j in range(L):
         #sprintf('precalc S. %d of %d',j,L)
