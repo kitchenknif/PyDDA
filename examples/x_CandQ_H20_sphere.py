@@ -68,12 +68,12 @@ del(A)
 
 # Here, we plot the efficiencies Q instead of the cross sections C
 # Q = C/(pi*r^2)
-#clf()
-#plot(k*arange, Cext/(pi * arange**2), '*')
-#plot(k*arange, Cabs/(pi * arange**2), 'x')
-#plot(k*arange, Cscat/(pi * arange**2), 'o')
-#legend(['Q_{ext}', 'Q_{abs}', 'Q_{scat}'])
-#ylabel('Q')
-#xlabel('2\pia/\lambda')  # size parameter
-#title('m = ' + str(m1))
-#show(block=True)
+clf()
+plot(k*arange, Cext/(pi * arange**2), '*')
+plot(k*arange, Cabs/(pi * arange**2), 'x')
+plot(k*arange, Cscat/(pi * arange**2), 'o')
+legend(['Q_{ext}', 'Q_{abs}', 'Q_{scat}'])
+ylabel('Q')
+xlabel('2\pia/\lambda')  # size parameter
+title('m = ' + str(m1))
+show(block=True)

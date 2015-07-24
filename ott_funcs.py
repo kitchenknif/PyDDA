@@ -2,10 +2,10 @@ import numpy
 import scipy.special
 import misc
 
-def legendrerow(n, theta):
 
-    #x = scipy.special.legendre(n, theta)
-    #return x.coeffs
+def legendrerow(n, theta):
+    # x = scipy.special.legendre(n, theta)
+    # return x.coeffs
 
     # legendrerow.m : Gives the spherical coordinate recursion in m for a given
     #                 n, theta.
@@ -17,43 +17,45 @@ def legendrerow(n, theta):
     # *may* provide a benefit in Octave. Inspiration from [Holmes and Featherstone, 2002]
     # and [Jekeli et al., 2007].
     #
-    #% PACKAGE INFO
+    # % PACKAGE INFO
 
-    if n==0:
-        pnm = 1/numpy.sqrt(2*numpy.pi)/numpy.sqrt(2);
+    if n == 0:
+        pnm = 1 / numpy.sqrt(2 * numpy.pi) / numpy.sqrt(2);
         return pnm
 
     theta = numpy.transpose(theta)
 
-    ct=numpy.cos(theta)
-    st=numpy.sin(theta)
+    ct = numpy.cos(theta)
+    st = numpy.sin(theta)
 
-    Wnn=numpy.sqrt((2*n+1)/(4*numpy.pi)*numpy.prod(1 -(1/2) * numpy.divide(1, range(1,n+1))) ) * numpy.ones(theta.shape) #first entry!
+    Wnn = numpy.sqrt(
+        (2 * n + 1) / (4 * numpy.pi) * numpy.prod(1 - (1 / 2) * numpy.divide(1, range(1, n + 1)))) * numpy.ones(
+        theta.shape)  # first entry!
 
-    #Wnn=numpy.sqrt((2*n+1)/(4*numpy.pi)*prod(1-1/2./[1:n]))*ones(size(theta)); #first entry!
+    # Wnn=numpy.sqrt((2*n+1)/(4*numpy.pi)*prod(1-1/2./[1:n]))*ones(size(theta)); #first entry!
 
-    Wnnm1=numpy.sqrt(2*n) * ct * Wnn #second entry!
-    lnm = len(range(0, n+1))
+    Wnnm1 = numpy.sqrt(2 * n) * ct * Wnn  # second entry!
+    lnm = len(range(0, n + 1))
 
-    pnm=numpy.zeros([lnm, theta.size])
-    pnm[-1,:]=Wnn
-    pnm[-2,:]=Wnnm1
+    pnm = numpy.zeros([lnm, theta.size])
+    pnm[-1, :] = Wnn
+    pnm[-2, :] = Wnnm1
 
-    if lnm==2:
+    if lnm == 2:
         pnm = [[Wnnm1], [Wnn]]
     else:
-        jj=lnm-3
-        for ii in range(n-2, -1, -1):
-            a = numpy.sqrt(4*(ii+1)**2/(n-ii)/(n+ii+1))
-            b = numpy.sqrt((n-ii-1)*(n+ii+2)/(n-ii)/(n+ii+1))
+        jj = lnm - 3
+        for ii in range(n - 2, -1, -1):
+            a = numpy.sqrt(4 * (ii + 1) ** 2 / (n - ii) / (n + ii + 1))
+            b = numpy.sqrt((n - ii - 1) * (n + ii + 2) / (n - ii) / (n + ii + 1))
 
-            pnm[jj, :] = a*ct*pnm[jj+1, :] - b * st**2 * pnm[jj+2, :]   #row recursion!
-            jj = jj -  1
+            pnm[jj, :] = a * ct * pnm[jj + 1, :] - b * st ** 2 * pnm[jj + 2, :]  # row recursion!
+            jj = jj - 1
 
-    ST,M = numpy.meshgrid(st,range(0,n+1))
+    ST, M = numpy.meshgrid(st, range(0, n + 1))
 
-    pnm = pnm * ST**M
-    return pnm.T[0,:]  #TODO: Not sure if correct
+    pnm = pnm * ST ** M
+    return pnm.T[0, :]  # TODO: Not sure if correct
 
 
 def sbesselh(n, htype, kr):
@@ -70,16 +72,16 @@ def sbesselh(n, htype, kr):
 
     kr = numpy.transpose(kr)
     n = numpy.transpose(n)
-    #hn = besselh(n'+1/2,htype,kr);
+    # hn = besselh(n'+1/2,htype,kr);
     if htype == 1:
-        hn = scipy.special.hankel1(numpy.transpose(n)+1/2,kr)
+        hn = scipy.special.hankel1(numpy.transpose(n) + 1 / 2, kr)
     elif htype == 2:
-        hn = scipy.special.hankel2(numpy.transpose(n)+1/2,kr)
+        hn = scipy.special.hankel2(numpy.transpose(n) + 1 / 2, kr)
     else:
         raise Exception("whoops")
 
     kr = numpy.kron(numpy.ones([n.size]), kr)
-    hn = numpy.sqrt(numpy.kron(numpy.ones(kr.shape), numpy.pi) / (2*kr)) * hn
+    hn = numpy.sqrt(numpy.kron(numpy.ones(kr.shape), numpy.pi) / (2 * kr)) * hn
 
     return hn
 
@@ -98,9 +100,9 @@ def sbesselh1(n, kr):
 
     kr = numpy.transpose(kr)
     n = numpy.transpose(n)
-    hn = scipy.special.hankel1(numpy.transpose(n)+1/2,kr)
+    hn = scipy.special.hankel1(numpy.transpose(n) + 1 / 2, kr)
     kr = numpy.kron(numpy.ones([n.size]), kr)
-    hn = numpy.sqrt(numpy.kron(numpy.ones(kr.shape), numpy.pi) / (2*kr)) * hn
+    hn = numpy.sqrt(numpy.kron(numpy.ones(kr.shape), numpy.pi) / (2 * kr)) * hn
     return hn
 
 
@@ -118,23 +120,23 @@ def sbesselh2(n, kr):
 
     kr = numpy.transpose(kr)
     n = numpy.transpose(n)
-    hn = scipy.special.hankel2(numpy.transpose(n)+1/2,kr)
+    hn = scipy.special.hankel2(numpy.transpose(n) + 1 / 2, kr)
     kr = numpy.kron(numpy.ones([n.size]), kr)
-    hn = numpy.sqrt(numpy.kron(numpy.ones(kr.shape), numpy.pi) / (2*kr)) * hn
+    hn = numpy.sqrt(numpy.kron(numpy.ones(kr.shape), numpy.pi) / (2 * kr)) * hn
     return hn
 
 
 def sbesselj(n, kr):
-    #if isinstance(n, int) and isinstance(kr, int):
+    # if isinstance(n, int) and isinstance(kr, int):
     #    return scipy.special.sph_jn(n, kr)[0][-1]
-    #elif isinstance(n, int) and not isinstance(kr, int):
+    # elif isinstance(n, int) and not isinstance(kr, int):
     #    return [scipy.special.sph_jn(n, kei)[0][-1] for kei in kr]
-    #elif not isinstance(n, int):
+    # elif not isinstance(n, int):
     #    raise Exception('Not yet implemented')
 
-    #return scipy.special.jn(n+0.5,kr)
+    # return scipy.special.jn(n+0.5,kr)
 
-    #function [jn] = sbesselj(n,kr)
+    # function [jn] = sbesselj(n,kr)
     # sbesselj - spherical bessel function jn(kr)
     #
     # jn(kr) = sqrt(pi/2kr) Jn+0.5(kr)
@@ -145,27 +147,28 @@ def sbesselj(n, kr):
     #
     # PACKAGE INFO
 
-    #kr=kr(:);
-    #n=n(:);
-    jn = scipy.special.jn(n + 1/2, kr)
-    #n, kr = numpy.meshgrid(n, kr)
+    # kr=kr(:);
+    # n=n(:);
+    jn = scipy.special.jn(n + 1 / 2, kr)
+    # n, kr = numpy.meshgrid(n, kr)
 
     kr = numpy.asarray(kr)
     n = numpy.asarray(n)
 
-    small_args = kr[ numpy.abs(kr) < 1e-15]
-    not_small_args =kr[ not (numpy.abs(kr) < 1e-15) ]
+    small_args = kr[numpy.abs(kr) < 1e-15]
+    not_small_args = kr[not (numpy.abs(kr) < 1e-15)]
 
     if kr.size == 1 and numpy.abs(kr) < 1e-15:
-         jn = numpy.divide(numpy.power(kr,n), numpy.prod(range(1,(2*n+2),2)))
+        jn = numpy.divide(numpy.power(kr, n), numpy.prod(range(1, (2 * n + 2), 2)))
     elif kr.size == 1 and not numpy.abs(kr) < 1e-15:
-        jn = numpy.sqrt( numpy.pi / (2*kr)) * jn
+        jn = numpy.sqrt(numpy.pi / (2 * kr)) * jn
     elif n.size == 1:
         jn[not_small_args] = numpy.sqrt(numpy.divide(numpy.pi, (2 * kr[not_small_args]))) * jn[not_small_args]
-        jn[small_args] = numpy.divide(numpy.power(kr[small_args],n), numpy.prod(range(1(2*n+2),2)))
-    else: # both n and kr are vectors
-        jn[not_small_args] = numpy.sqrt(numpy.divide(numpy.pi, (2*kr[not_small_args]))) * jn[not_small_args]
-        jn[small_args] = numpy.divide(numpy.power(kr[small_args],n[small_args]), [numpy.prod(range(1,(2*i+2),2)) for i in n[small_args]])
+        jn[small_args] = numpy.divide(numpy.power(kr[small_args], n), numpy.prod(range(1(2 * n + 2), 2)))
+    else:  # both n and kr are vectors
+        jn[not_small_args] = numpy.sqrt(numpy.divide(numpy.pi, (2 * kr[not_small_args]))) * jn[not_small_args]
+        jn[small_args] = numpy.divide(numpy.power(kr[small_args], n[small_args]),
+                                      [numpy.prod(range(1, (2 * i + 2), 2)) for i in n[small_args]])
 
     return jn
 
@@ -197,14 +200,14 @@ def spharm(n, m, theta, phi):
     if not isinstance(n, int):
         raise Exception('n must be a scalar at present')
 
-    #this is a cop out meant for future versions.
-    #TODO Hopefully not used
-    #if nargout > 1:
+    # this is a cop out meant for future versions.
+    # TODO Hopefully not used
+    # if nargout > 1:
     #    mi = m
     #    m = range(-n,n)
 
     mi = m
-    m = numpy.asarray(range(-n, n + 1)) #TODO TEST
+    m = numpy.asarray(range(-n, n + 1))  # TODO TEST
     m = m[numpy.abs(m) <= n]
 
     theta, phi = misc.matchsize(numpy.asarray(theta), numpy.asarray(phi))
@@ -218,7 +221,7 @@ def spharm(n, m, theta, phi):
     # end
 
     pnm = legendrerow(n, theta)
-    #pnm = pnm(abs(m)+1,:).';
+    # pnm = pnm(abs(m)+1,:).';
 
     # Why is this needed? Better do it, or m = 0 square integrals
     # are equal to 1/2, not 1.
@@ -226,13 +229,13 @@ def spharm(n, m, theta, phi):
     # Check this if MATLAB version changes! (Version 5.X)
     # pnm(1,:) = pnm(1,:) * sqrt(2);
 
-    pnm = pnm[abs(m)] #pick the m's we potentially have.
+    pnm = pnm[abs(m)]  # pick the m's we potentially have.
 
     phiM, mv = numpy.meshgrid(phi, m)
 
-    pnm = numpy.append((numpy.power((-1), mv[m<0,:]).T * pnm[m < 0]), pnm[m >= 0])
+    pnm = numpy.append((numpy.power((-1), mv[m < 0, :]).T * pnm[m < 0]), pnm[m >= 0])
 
-    expphi = numpy.exp(1j*mv * phiM).T
+    expphi = numpy.exp(1j * mv * phiM).T
 
     # N = sqrt((2*n+1)/(8*pi))
 
@@ -250,11 +253,12 @@ def spharm(n, m, theta, phi):
     # d/dtheta Y(n,m) = 1/2 exp(-i phi) sqrt((n-m)(n+m+1)) Y(n,m+1)
     #                 - 1/2 exp(i phi) sqrt((n-m+1)(n+m)) Y(n,m-1)
 
-    ymplus = numpy.append(Y[1:], numpy.zeros([theta.size]) )
+    ymplus = numpy.append(Y[1:], numpy.zeros([theta.size]))
 
-    ymminus = numpy.append( numpy.zeros([theta.size]), Y[0:-1] )
+    ymminus = numpy.append(numpy.zeros([theta.size]), Y[0:-1])
 
-    Ytheta = numpy.sqrt((n-mv+1) * (n+mv)).T/2 * expplus.T * ymminus - numpy.sqrt((n-mv) * (n+mv+1)).T/2 * expminus.T * ymplus
+    Ytheta = numpy.sqrt((n - mv + 1) * (n + mv)).T / 2 * expplus.T * ymminus - numpy.sqrt(
+        (n - mv) * (n + mv + 1)).T / 2 * expminus.T * ymplus
 
     # phi derivative - actually 1/sin(theta) * d/dphi Y(n,m)
     # Note that this is just i*m/sin(theta) * Y(n,m), but we use a
@@ -263,23 +267,25 @@ def spharm(n, m, theta, phi):
     # i/2 * [ exp(-i phi) sqrt((2n+1)(n+m+1)(n+m+2)/(2n+3)) Y(n+1,m+1)
     #     + exp(i phi) sqrt((2n+1)(n-m+1)(n-m+2)/(2n+3)) Y(n+1,m-1) ]
 
-    Y2 = (spharm2(n+1, theta, phi)).T
+    Y2 = (spharm2(n + 1, theta, phi)).T
 
-    ymplus=Y2[2:]
-    ymminus=Y2[0:-2]
+    ymplus = Y2[2:]
+    ymminus = Y2[0:-2]
 
-    #size(ymplus)
-    #size(mv)
-    #size(expminus)
+    # size(ymplus)
+    # size(mv)
+    # size(expminus)
 
 
-    Yphi = 1j/2 * numpy.sqrt((2*n+1)/(2*n+3)) * ( numpy.sqrt((n+mv+1) * (n+mv+2)).T * expminus.T * ymplus + numpy.sqrt((n-mv+1) *(n-mv+2)).T * expplus.T * ymminus )
+    Yphi = 1j / 2 * numpy.sqrt((2 * n + 1) / (2 * n + 3)) * (
+    numpy.sqrt((n + mv + 1) * (n + mv + 2)).T * expminus.T * ymplus + numpy.sqrt(
+        (n - mv + 1) * (n - mv + 2)).T * expplus.T * ymminus)
 
-    Y=Y[numpy.add(mi, n)].T
-    Yphi=Yphi[0, numpy.add(mi, n)].T
-    Ytheta=Ytheta[0, numpy.add(mi, n)].T
+    Y = Y[numpy.add(mi, n)].T
+    Yphi = Yphi[0, numpy.add(mi, n)].T
+    Ytheta = Ytheta[0, numpy.add(mi, n)].T
 
-    return Y,Ytheta,Yphi
+    return Y, Ytheta, Yphi
 
 
 def spharm2(n, theta, phi):
@@ -292,7 +298,7 @@ def spharm2(n, theta, phi):
     if not isinstance(n, int):
         raise Exception('n must be a scalar at present')
 
-    m = numpy.asarray(range(-n, n+1)) #TODO TEST
+    m = numpy.asarray(range(-n, n + 1))  # TODO TEST
 
     m = m[numpy.abs(m) <= n]
 
@@ -307,7 +313,7 @@ def spharm2(n, theta, phi):
     # end
 
     pnm = legendrerow(n, theta)
-    #pnm = pnm(abs(m)+1,:).';
+    # pnm = pnm(abs(m)+1,:).';
 
     # Why is this needed? Better do it, or m = 0 square integrals
     # are equal to 1/2, not 1.
@@ -315,19 +321,19 @@ def spharm2(n, theta, phi):
     # Check this if MATLAB version changes! (Version 5.X)
     # pnm(1,:) = pnm(1,:) * sqrt(2);
 
-    pnm = pnm[abs(m)] #pick the m's we potentially have.
+    pnm = pnm[abs(m)]  # pick the m's we potentially have.
 
     phiM, mv = numpy.meshgrid(phi, m)
 
-    pnm = numpy.append((numpy.power((-1), mv[m<0,:]).T * pnm[m < 0]), pnm[m >= 0])
+    pnm = numpy.append((numpy.power((-1), mv[m < 0, :]).T * pnm[m < 0]), pnm[m >= 0])
 
-    expphi = numpy.exp(1j*mv * phiM).T
+    expphi = numpy.exp(1j * mv * phiM).T
 
     # N = sqrt((2*n+1)/(8*pi))
 
     Y = pnm * expphi
 
-    #Y = numpy.transpose(Y)
+    # Y = numpy.transpose(Y)
     return Y[0]
 
 
@@ -355,7 +361,7 @@ def vsh(n, m, theta, phi):
     if not isinstance(n, int):
         raise Exception('n must be a scalar at present')
 
-    #if phi is None:
+    # if phi is None:
     #    phi = theta
     #    theta = m
     #    m = range(-n, n+1) #TODO TEST
@@ -366,8 +372,8 @@ def vsh(n, m, theta, phi):
 
     Y, Ytheta, Yphi = spharm(n, m, theta, phi)
 
-    #this makes the vectors go down in m for n. has no effect if old version
-    #code.
+    # this makes the vectors go down in m for n. has no effect if old version
+    # code.
 
     Z = numpy.zeros(Y.size)
 
@@ -381,7 +387,6 @@ def vsh(n, m, theta, phi):
 
 
 def vswf(n, m, kr, theta, phi, htype=0):
-
     # vswf.m : Vector spherical wavefunctions: M_k, N_k.
     #
     # Usage:
@@ -416,44 +421,43 @@ def vswf(n, m, kr, theta, phi, htype=0):
     if not isinstance(n, int):
         raise Exception('n must be a scalar at present')
 
-    #if nargin < 5:
+    # if nargin < 5:
     #    htype=0;
     #    phi=theta;
     #    theta=kr;
     #    kr=m;
     #    m=[-n:n];
 
-    #if nargin==5
+    # if nargin==5
     #    htype=0;
 
 
-    #Convert all to column vectors
-    #kr = kr.flatten(1)          # numpy.transpose(kr)
-    #theta = theta.flatten(1)    # numpy.transpose(theta)
-    #phi = phi.flatten(1)        # numpy.transpose(phi)
+    # Convert all to column vectors
+    # kr = kr.flatten(1)          # numpy.transpose(kr)
+    # theta = theta.flatten(1)    # numpy.transpose(theta)
+    # phi = phi.flatten(1)        # numpy.transpose(phi)
 
-    #Check the lengths
+    # Check the lengths
     kr, theta, phi = misc.matchsize(numpy.asarray(kr), numpy.asarray(theta), numpy.asarray(phi))
 
-    [B,C,P] = vsh(n, m, theta, phi)
+    [B, C, P] = vsh(n, m, theta, phi)
     if n > 0:
-        Nn = numpy.sqrt(1/(n*(n+1)))
+        Nn = numpy.sqrt(1 / (n * (n + 1)))
     else:
         Nn = 0
 
-
     if htype == 1:
         if not isinstance(m, int):
-            kr3 = numpy.kron(numpy.ones(1,m.size*3),kr) #makes all these suitable length
-            hn  = numpy.kron(numpy.ones(1,m.size*3), sbesselh1(n,kr))
-            hn1 = numpy.kron(numpy.ones(1,m.size*3),sbesselh1(n-1,kr))
+            kr3 = numpy.kron(numpy.ones(1, m.size * 3), kr)  # makes all these suitable length
+            hn = numpy.kron(numpy.ones(1, m.size * 3), sbesselh1(n, kr))
+            hn1 = numpy.kron(numpy.ones(1, m.size * 3), sbesselh1(n - 1, kr))
         else:
-            kr3=misc.threewide(kr) #makes all these suitable length
-            hn=misc.threewide(sbesselh1(n,kr))
-            hn1=misc.threewide(sbesselh1(n-1,kr))
+            kr3 = misc.threewide(kr)  # makes all these suitable length
+            hn = misc.threewide(sbesselh1(n, kr))
+            hn1 = misc.threewide(sbesselh1(n - 1, kr))
 
         M = Nn * hn * C
-        N = Nn * ( n*(n+1) / kr3 * hn * P + ( hn1 - n / kr3 * hn ) / B )
+        N = Nn * (n * (n + 1) / kr3 * hn * P + (hn1 - n / kr3 * hn) / B)
         M2 = 0
         N2 = 0
         M3 = 0
@@ -462,16 +466,16 @@ def vswf(n, m, kr, theta, phi, htype=0):
     elif htype == 2:
 
         if not isinstance(m, int):
-            kr3  = numpy.kron(numpy.ones(1,m.size*3), kr)  #makes all these suitable length
-            hn   = numpy.kron(numpy.ones(1,m.size*3),sbesselh2(n,kr))
-            hn1  = numpy.kron(numpy.ones(1,m.size*3), sbesselh2(n-1,kr))
+            kr3 = numpy.kron(numpy.ones(1, m.size * 3), kr)  # makes all these suitable length
+            hn = numpy.kron(numpy.ones(1, m.size * 3), sbesselh2(n, kr))
+            hn1 = numpy.kron(numpy.ones(1, m.size * 3), sbesselh2(n - 1, kr))
         else:
-            kr3 = misc.threewide(kr); #makes all these suitable length
-            hn  = misc.threewide(sbesselh2(n,kr))
-            hn1 = misc.threewide(sbesselh2(n-1,kr))
+            kr3 = misc.threewide(kr);  # makes all these suitable length
+            hn = misc.threewide(sbesselh2(n, kr))
+            hn1 = misc.threewide(sbesselh2(n - 1, kr))
 
         M = Nn * hn * C
-        N = Nn * ( n*(n+1) / kr3 * hn * P + ( hn1 - n / kr3 * hn ) * B )
+        N = Nn * (n * (n + 1) / kr3 * hn * P + (hn1 - n / kr3 * hn) * B)
         M2 = 0
         N2 = 0
         M3 = 0
@@ -479,74 +483,75 @@ def vswf(n, m, kr, theta, phi, htype=0):
     elif htype == 3:
 
         if not isinstance(m, int):
-            kr3 = numpy.kron(numpy.ones(1, m.size * 3), kr) #makes all these suitable length
-            jn  = numpy.kron(numpy.kron(1,m.size * 3), sbesselj(n,kr))
-            jn1 = numpy.kron(numpy.kron(1,m.size * 3), sbesselj(n-1,kr))
+            kr3 = numpy.kron(numpy.ones(1, m.size * 3), kr)  # makes all these suitable length
+            jn = numpy.kron(numpy.kron(1, m.size * 3), sbesselj(n, kr))
+            jn1 = numpy.kron(numpy.kron(1, m.size * 3), sbesselj(n - 1, kr))
         else:
-            kr3=misc.threewide(kr) #makes all these suitable length
-            jn=misc.threewide(sbesselj(n,kr))
-            jn1=misc.threewide(sbesselj(n-1,kr))
-
+            kr3 = misc.threewide(kr)  # makes all these suitable length
+            jn = misc.threewide(sbesselj(n, kr))
+            jn1 = misc.threewide(sbesselj(n - 1, kr))
 
         M = Nn * jn * C
-        N = Nn * ( n*(n+1) / kr3 * jn * P + ( jn1 - n / kr3 * jn  ) * B) #here is change!~!!!! get rid of jn->jn1
+        N = Nn * (n * (n + 1) / kr3 * jn * P + (jn1 - n / kr3 * jn) * B)  # here is change!~!!!! get rid of jn->jn1
         M2 = 0
         N2 = 0
         M3 = 0
         N3 = 0
 
         if n != 1:
-            N[kr3==0] = 0
+            N[kr3 == 0] = 0
         else:
-            N[kr3==0] = 2/3 * Nn *( P[kr3==0] + B[kr3==0])
+            N[kr3 == 0] = 2 / 3 * Nn * (P[kr3 == 0] + B[kr3 == 0])
 
     else:
         if not isinstance(m, int):
-            kr3 = numpy.kron(numpy.ones(1, m.size*3), kr)  #makes all these suitable length
+            kr3 = numpy.kron(numpy.ones(1, m.size * 3), kr)  # makes all these suitable length
 
-            jn   = numpy.kron(numpy.ones(1,m.size*3), sbesselj(n,kr))
-            jn1  = numpy.kron(numpy.ones(1,m.size*3),sbesselj(n-1,kr))
+            jn = numpy.kron(numpy.ones(1, m.size * 3), sbesselj(n, kr))
+            jn1 = numpy.kron(numpy.ones(1, m.size * 3), sbesselj(n - 1, kr))
 
-            hn1  = numpy.kron(numpy.ones(1,m.size*3),sbesselh1(n,kr))
-            hn11 = numpy.kron(numpy.ones(1,m.size*3), sbesselh1(n-1,kr))
+            hn1 = numpy.kron(numpy.ones(1, m.size * 3), sbesselh1(n, kr))
+            hn11 = numpy.kron(numpy.ones(1, m.size * 3), sbesselh1(n - 1, kr))
 
-            hn2  = numpy.kron(numpy.ones(1,m.size*3), sbesselh2(n,kr))
-            hn21 = numpy.kron(numpy.ones(1,m.size*3),sbesselh2(n-1,kr))
+            hn2 = numpy.kron(numpy.ones(1, m.size * 3), sbesselh2(n, kr))
+            hn21 = numpy.kron(numpy.ones(1, m.size * 3), sbesselh2(n - 1, kr))
         else:
-            kr3  = misc.threewide(kr) #makes all these suitable length
+            kr3 = misc.threewide(kr)  # makes all these suitable length
 
-            hn2  = misc.threewide(sbesselh2(n, kr))
-            hn21 = misc.threewide(sbesselh2(n-1, kr))
+            hn2 = misc.threewide(sbesselh2(n, kr))
+            hn21 = misc.threewide(sbesselh2(n - 1, kr))
 
-            hn1  = misc.threewide(sbesselh1(n, kr))
-            hn11 = misc.threewide(sbesselh1(n-1, kr))
+            hn1 = misc.threewide(sbesselh1(n, kr))
+            hn11 = misc.threewide(sbesselh1(n - 1, kr))
 
-            jn   = misc.threewide(sbesselj(n, kr))
-            jn1  = misc.threewide(sbesselj(n-1, kr))
+            jn = misc.threewide(sbesselj(n, kr))
+            jn1 = misc.threewide(sbesselj(n - 1, kr))
 
         M = Nn * hn1 * C
-        N = Nn * ( n*(n+1) / kr3 * hn1 * P + ( hn11 - n / kr3 * hn1 ) * B )
+        N = Nn * (n * (n + 1) / kr3 * hn1 * P + (hn11 - n / kr3 * hn1) * B)
         M2 = Nn * hn2 * C
-        N2 = Nn * ( n*(n+1) / kr3 * hn2 * P + ( hn21 - n / kr3 * hn2 ) * B )
+        N2 = Nn * (n * (n + 1) / kr3 * hn2 * P + (hn21 - n / kr3 * hn2) * B)
         M3 = Nn * jn * C
-        N3 = Nn * ( n*(n+1) / kr3 * jn * P + ( jn1 - n / kr3 * jn ) * B )
+        N3 = Nn * (n * (n + 1) / kr3 * jn * P + (jn1 - n / kr3 * jn) * B)
 
         if n != 1:
-            N3[kr3==0] = 0
+            N3[kr3 == 0] = 0
         else:
-            N3[kr3==0] = 2/3 * Nn *( P[kr3==0] + B[kr3==0])
+            N3[kr3 == 0] = 2 / 3 * Nn * (P[kr3 == 0] + B[kr3 == 0])
 
         M = M[0]
         N = N[0]
 
     return M[0], N[0], M[1], N[1], M[2], N[2]
-    #return M, N, M2, N2, M3, N3
+    # return M, N, M2, N2, M3, N3
+
 
 # % /* hankel evaluates hankel function of the first kind,   */
 # % /* order zero, and its derivative for complex argument z */
 # % void hankel( complex double z, complex double *h0, complex double *h0p )
 def hankel0(z):
     return scipy.special.hankel1(0, z), scipy.special.h1vp(0, z, 1)
+
 
 # bessel evaluates the zero-order bessel function */
 # and its derivative for complex argument z. */
