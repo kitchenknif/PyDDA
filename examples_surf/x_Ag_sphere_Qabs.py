@@ -12,6 +12,8 @@ from dda_si_funcs import *
 
 import refractiveIndex
 
+
+
 pow1d3 = power_function(1. / 3.)
 pow2 = power_function(2)
 
@@ -55,6 +57,8 @@ R_p = zeros(lambda_range.size, dtype=numpy.complex64)
 E0 = asarray([0, cos(gamma), sin(gamma)])  # E-field [x y z]
 kvec = k * asarray([0, sin(gamma), -cos(gamma)])  # wave vector [x y z]
 
+
+start_t = time.time()
 ix = 0
 for lam in lambda_range:
     n1 = nBK7[ix]
@@ -90,7 +94,9 @@ for lam in lambda_range:
 
     ix += 1
 
-figure(1)
-plot(lambda_range, Q_abs, lambda_range, Q_abs_fs, '--')
-title(['gamma = ' + str(gamma * 180 / pi) + ', zgap = ' + str(zgap) + ', N = ' + str(N)])
-show(block=True)
+print(time.time() - start_t)
+
+#figure(1)
+#plot(lambda_range, Q_abs, lambda_range, Q_abs_fs, '--')
+#title(['gamma = ' + str(gamma * 180 / pi) + ', zgap = ' + str(zgap) + ', N = ' + str(N)])
+#show(block=True)

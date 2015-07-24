@@ -265,25 +265,26 @@ def E_sca_SI(k, r, P, det_r, theta, phi, n1):
 
     N, cols = r.shape
 
-    rows, cols = theta.shape
-    if cols > rows:
-        theta = numpy.reshape(theta, [cols, rows])
-    rows, cols = phi.shape
-    if cols > rows:
-        phi = numpy.reshape(phi, [cols, rows])
-    rows, cols = det_r.shape
-    if cols > rows:
-        det_r = numpy.reshape(det_r, [cols, rows])
+    #TODO: what does this do?
+    #rows, cols = theta.shape
+    #if cols > rows:
+    #    theta = numpy.reshape(theta, [cols, rows])
+    #rows, cols = phi.shape
+    #if cols > rows:
+    #    phi = numpy.reshape(phi, [cols, rows])
+    #rows, cols = det_r.shape
+    #if cols > rows:
+    #    det_r = numpy.reshape(det_r, [cols, rows])
 
     # %pts = length(r_unit);
-    r_sp = [det_r, theta, phi]
+    r_sp = numpy.asarray([det_r, theta, phi]).T
     pts, cols = r_sp.shape
     r_unit = numpy.ones([pts])
-    er_sp = [r_unit, theta, phi]
-    e1_sp = [r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi]
+    #er_sp = numpy.asarray([r_unit, theta, phi]).T
+    #e1_sp = numpy.asarray([r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi]).T
 
-    r_E = misc.rtp2xyz(er_sp)
-    r_E1 = misc.rtp2xyz(e1_sp)
+    r_E = numpy.asarray(misc.rtp2xyz(r_unit, theta, phi)).T #er_sp
+    r_E1 = numpy.asarray(misc.rtp2xyz(r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi)).T #e1_sp
     er = numpy.zeros([pts, 3])
     e1 = numpy.zeros([pts, 3])
     e2 = numpy.zeros([pts, 3])
@@ -302,7 +303,7 @@ def E_sca_SI(k, r, P, det_r, theta, phi, n1):
         e1p = e1[pt, :]  # e_theta
         e2p = e2[pt, :]  # e_phi
         k_sca = k * erp
-        k_Isca = [k_sca[1], k_sca[2], -k_sca[3]]
+        k_Isca = [k_sca[0], k_sca[1], -k_sca[2]]
 
         #   % This is the modification was made Mitchell Short, University of Utah,
         #   % to account for the Fresnel coefficient at each angle of dipole
@@ -313,9 +314,9 @@ def E_sca_SI(k, r, P, det_r, theta, phi, n1):
         # %rp = norm(r_E(pt,:));
         rp = det_r[pt]
         for j in numpy.arange(N):
-            Pj = P[3 * j + 1:3 * j + 3]
+            Pj = P[3 * j + 0:3 * j + 3]
             rj = r[j, :]
-            rIj = [rj[1], rj[2], -rj[3]]
+            rIj = [rj[0], rj[1], -rj[2]]
             E[pt, :] = E[pt, :] + numpy.exp(-1j * numpy.dot(k_sca, rj)) * (
             numpy.dot(Pj, e1p) * e1p + numpy.dot(Pj, e2p) * e2p) + numpy.exp(-1j * numpy.dot(k_Isca, rj)) * (
             refl_TM * numpy.dot(Pj, e1p) * e1p + refl_TE * numpy.dot(Pj, e2p) * e2p)
