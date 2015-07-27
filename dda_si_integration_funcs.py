@@ -25,9 +25,9 @@ def gshank(start, dela, suminc, nans, seed, ibk, bk, delb, zph, rho, k1, k2, jh)
 
     #suminc = suminc_start
 
-    q1 = numpy.zeros([6, 20], dtype=numpy.complex64)
-    q2 = numpy.zeros([6, 20], dtype=numpy.complex64)
-    ans1 = numpy.zeros([6, 1], dtype=numpy.complex64)
+    q1 = numpy.zeros([6, 20], dtype=numpy.complex128)
+    q2 = numpy.zeros([6, 20], dtype=numpy.complex128)
+    ans1 = numpy.zeros([6, 1], dtype=numpy.complex128)
 
     # # constants
     MAXH = 20
@@ -203,9 +203,9 @@ def rom1(n, nx, zph, rho, k1, k2, a, b, jh):
 
     dz = 0
     dzot = 0
-    t01 = numpy.zeros([n], dtype=numpy.complex64)
-    t10 = numpy.zeros([n], dtype=numpy.complex64)
-    t20 = numpy.zeros([n], dtype=numpy.complex64)
+    t01 = numpy.zeros([n], dtype=numpy.complex128)
+    t10 = numpy.zeros([n], dtype=numpy.complex128)
+    t20 = numpy.zeros([n], dtype=numpy.complex128)
 
     # % constants
     NM = 131072
@@ -458,7 +458,7 @@ def saoa(t, zph, rho, k1, k2, a, b, jh):
     den1 = 1 / (cgam1 + cgam2) - cksm / cgam2
     com = dxl * xl * numpy.exp(-cgam2 * zph)
 
-    answer = numpy.zeros([6], dtype=numpy.complex64)
+    answer = numpy.zeros([6], dtype=numpy.complex128)
 
     answer[5] = com * b0 * den1 / k1  # ans[5] = com*b0*den1/ck1
     com = com * den2  # com *= den2
@@ -656,9 +656,9 @@ def precalc_Somm(r, k1, k2, use_mex=False):
     zr = numpy.zeros([N * N, 2])
 
     ix = 0
-    for j in range(N):
+    for j in numpy.arange(N):
         # sprintf('precalc zph rho. %d of %d',j,N)
-        for k in range(N):
+        for k in numpy.arange(N):
             r_j = r[j, :]
             r_k = r[k, :]
             zph = r_j[2] + r_k[2]
@@ -668,7 +668,7 @@ def precalc_Somm(r, k1, k2, use_mex=False):
             # zph = round2(zph,.0001);
             # rho = round2(rho,.0001);
 
-            zr[ix, :] = numpy.asarray([zph, rho])
+            zr[ix, :] = numpy.asarray([zph, rho])  # TODO: Get rid of asarray
             ix = ix + 1
 
     zr0 = zr
@@ -676,9 +676,9 @@ def precalc_Somm(r, k1, k2, use_mex=False):
     zr, m, n = misc.unique_rows(zr, return_index=True, return_inverse=True)
     L = zr.shape[0]
 
-    S = numpy.zeros([L, 4], dtype=numpy.complex64)
+    S = numpy.zeros([L, 4], dtype=numpy.complex128)
 
-    for j in range(L):
+    for j in numpy.arange(L):
         # sprintf('precalc S. %d of %d',j,L)
         if use_mex:
             raise Exception("Some unknown function")

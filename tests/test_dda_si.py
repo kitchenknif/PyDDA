@@ -164,4 +164,48 @@ class TestDDA_SI(TestCase):
 
 
     def test_E_sca_SI(self):
-        self.fail()
+        pow1d3 = power_function(1. / 3.)
+
+        lambd = 632.8  # nm
+        sides = 400  # nm
+        k = 2 * pi  # wave number
+        n1 = 3.873960000000000 + 0.015720000000000j
+        N = 64  # number of dipoles
+
+        theta = linspace(-pi / 2, pi / 2, 180)  # phase angle range
+        pts = theta.size
+        phi_p = zeros(pts)
+        phi_s = pi / 2 * ones(pts)
+        det_r = 100
+
+        r = load_dipole_file('../shape/cube_' + str(N) + '.txt')
+        nl = pow1d3(N)
+        r[:, 2] += + nl / 2
+
+        d = sides / nl / lambd
+        r = d * r
+
+        P = read_data('test_files/cube_surf/P.txt').T[0]
+
+        # calculate scattered field as a function of angles
+        # parallel to incident plane
+        rE = asarray([det_r * ones(pts).T, theta.T, phi_p.T], dtype=numpy.complex128).T
+        Esca = E_sca_SI(k, r, P, rE[:, 0], rE[:, 1], rE[:, 2], n1)
+        Esca_p_exp = read_data('test_files/cube_surf/Esca_p.txt')
+
+        if not numpy.allclose(Esca, Esca_p_exp, rtol=1e-3):
+            print('Esca_p fail')
+            self.fail()
+        else:
+            print('Esca_p pass')
+
+        # perpendicular to incident plane
+        rE = asarray([det_r * ones(pts).T, theta.T, phi_s.T], dtype=numpy.complex128).T
+        Esca = E_sca_SI(k, r, P, rE[:, 0], rE[:, 1], rE[:, 2], n1)
+        Esca_p_exp = read_data('test_files/cube_surf/Esca_s.txt')
+
+        if not numpy.allclose(Esca, Esca_p_exp, rtol=1e-3):
+            print('Esca_s fail')
+            self.fail()
+        else:
+            print('Esca_s pass')

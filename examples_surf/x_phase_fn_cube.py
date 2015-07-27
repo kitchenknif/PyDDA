@@ -89,21 +89,33 @@ alph = polarizability_CM(d, m, k)  # polarizability of dipoles
 # matrix for direct and reflected interactions
 AR = interaction_AR(k1, k2, r, alph)  # non-global version, 2 copies of AR
 
+
+#
+#
+#
+#P = linalg.solve(AR, add(Ei, Ei_r))
+#P = scipy.sparse.linalg.gmres(AR, add(Ei, Ei_r))[0]
+#P = scipy.sparse.linalg.minres(AR, add(Ei, Ei_r))[0]
 P = scipy.sparse.linalg.qmr(AR, add(Ei, Ei_r))[0]  # solve dipole moments
+#P = read_data('../tests/test_files/cube_surf/P.txt').T[0]
+
+#
+#
+#
 
 # calculate scattered field as a function of angles
 # parallel to incident plane
 rE = asarray([det_r * ones(pts).T, theta.T, phi_p.T]).T
 Esca = E_sca_SI(k, r, P, rE[:, 0], rE[:, 1], rE[:, 2], n1)
 E = Esca
-Ip = pow2(k) * (pow2(det_r)).T * asarray([dot(a, a) for a in E])  # dot(E,E,2)
+Ip = pow2(k) * (pow2(det_r)).T * asarray([dot(a.conj(), a) for a in E])  # dot(E,E,2)
 
 
 # perpendicular to incident plane
 rE = asarray([det_r * ones(pts).T, theta.T, phi_s.T]).T
 Esca = E_sca_SI(k, r, P, rE[:, 0], rE[:, 1], rE[:, 2], n1)
 E = Esca
-Is = pow2(k) * (pow2(det_r)).T * asarray([dot(a, a) for a in E])  # dot(E,E,2)
+Is = pow2(k) * (pow2(det_r)).T * asarray([dot(a.conj(), a) for a in E])  # dot(E,E,2)
 # 
 # #save(['data/I_PF_cube_N' int2str(N) '.mat'],'Ip','Is')
 # 
@@ -114,10 +126,10 @@ ylabel('I_{sca}')
 xlabel('Scattering Angle')
 xlim([-90, 90])
 ylim([1e-5, 1])
-# 
+
 h = legend(['p', 's'])
-# set(h,'Location','SouthEast')
+#set(h,'Location','SouthEast')
 title('N=' + str(N))
-# #print('-dpng',['data/PF_cube_N' int2str(N) '.png'])
-#
+#print('-dpng',['data/PF_cube_N' int2str(N) '.png'])
+
 show(block=True)

@@ -25,7 +25,7 @@ N = S[:, 1].size
 k = 2*pi  # wave number
 d = 1/(abs(m1)*k)
 a_eff = (3*N/(4*pi))**(1/3)*1/(k*abs(m1))
-r = d*asarray([S[:, 0], S[:, 1], S[:, 2]], dtype=numpy.complex64).T
+r = d*asarray([S[:, 0], S[:, 1], S[:, 2]], dtype=numpy.complex128).T
 m = m1*ones(N)
 
 kvec = [0, 0, k]  # propagating in +z direction

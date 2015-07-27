@@ -55,7 +55,7 @@ def reflection_Rjk(k1, k2, r_j, r_k, S):
 
     Sjk = numpy.asarray([[S11, S12, S13],
                          [S21, S22, S23],
-                         [S31, S32, S33]])
+                         [S31, S32, S33]])  # TODO: Get rid of asarray
 
     G11 = -(beta + gamma * pow2(rhat_x))
     G12 = -gamma * rhat_x * rhat_y
@@ -69,7 +69,7 @@ def reflection_Rjk(k1, k2, r_j, r_k, S):
 
     Gjk = numpy.asarray([[G11, G12, G13],
                          [G21, G22, G23],
-                         [G31, G32, G33]])
+                         [G31, G32, G33]]) #TODO: Get rid of asarray
     # % to be consistent with the Draine and Flatau interraction matrix
     # % formulation we omit the (4*pi*ep)^-1 factor
     # % (A8)
@@ -109,7 +109,7 @@ def interaction_AR(k1, k2, r, alph):
 
     k0 = 2 * numpy.pi
     N = r[:, 1].size
-    AR = numpy.zeros([3 * N, 3 * N], dtype=numpy.complex64)
+    AR = numpy.zeros([3 * N, 3 * N], dtype=numpy.complex128)
     I = numpy.eye(3)
 
     S, nS = precalc_Somm(r, k1, k2)
@@ -202,12 +202,12 @@ def evanescent_k_e(theta_1, n1, n2):
     # This is only correct beyond the critical angle;
     # the sign for k_z is opposite otherwise. However, no round-off error.
     if numpy.isreal(theta_2):
-        k2 = numpy.asarray([0, n1 * k0 * numpy.sin(theta_1), 1j * k0 * numpy.sqrt(pow2(n1 * numpy.sin(theta_1)) - pow2(n2))], dtype=numpy.complex64)
+        k2 = numpy.asarray([0, n1 * k0 * numpy.sin(theta_1), 1j * k0 * numpy.sqrt(pow2(n1 * numpy.sin(theta_1)) - pow2(n2))], dtype=numpy.complex128)
     else:
-        k2 = numpy.asarray([0, n1 * k0 * numpy.sin(theta_1), -1j * k0 * numpy.sqrt(pow2(n1 * numpy.sin(theta_1)) - pow2(n2))], dtype=numpy.complex64)
+        k2 = numpy.asarray([0, n1 * k0 * numpy.sin(theta_1), -1j * k0 * numpy.sqrt(pow2(n1 * numpy.sin(theta_1)) - pow2(n2))], dtype=numpy.complex128)
 
-    ep = numpy.asarray([0, 1j * numpy.sqrt(pow2(n1 / n2 * numpy.sin(theta_1)) - 1), n1 / n2 * numpy.sin(theta_1)], dtype=numpy.complex64)
-    es = numpy.asarray([1, 0, 0], dtype=numpy.complex64)
+    ep = numpy.asarray([0, 1j * numpy.sqrt(pow2(n1 / n2 * numpy.sin(theta_1)) - 1), n1 / n2 * numpy.sin(theta_1)], dtype=numpy.complex128)
+    es = numpy.asarray([1, 0, 0], dtype=numpy.complex128)
 
     return k2, ep, es
 
@@ -277,17 +277,18 @@ def E_sca_SI(k, r, P, det_r, theta, phi, n1):
     #    det_r = numpy.reshape(det_r, [cols, rows])
 
     # %pts = length(r_unit);
-    r_sp = numpy.asarray([det_r, theta, phi]).T
+    r_sp = numpy.asarray([det_r, theta, phi], dtype=numpy.complex128).T  # TODO: Get rid of asarray
     pts, cols = r_sp.shape
-    r_unit = numpy.ones([pts])
+    r_unit = numpy.ones([pts], dtype=numpy.complex128)
     #er_sp = numpy.asarray([r_unit, theta, phi]).T
     #e1_sp = numpy.asarray([r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi]).T
 
-    r_E = numpy.asarray(misc.rtp2xyz(r_unit, theta, phi)).T #er_sp
-    r_E1 = numpy.asarray(misc.rtp2xyz(r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi)).T #e1_sp
-    er = numpy.zeros([pts, 3])
-    e1 = numpy.zeros([pts, 3])
-    e2 = numpy.zeros([pts, 3])
+    # TODO: Get rid of asarray
+    r_E = numpy.asarray(misc.rtp2xyz(r_unit, theta, phi), dtype=numpy.complex128).T #er_sp
+    r_E1 = numpy.asarray(misc.rtp2xyz(r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi), dtype=numpy.complex128).T #e1_sp
+    er = numpy.zeros([pts, 3], dtype=numpy.complex128)
+    e1 = numpy.zeros([pts, 3], dtype=numpy.complex128)
+    e2 = numpy.zeros([pts, 3], dtype=numpy.complex128)
 
     # % r_E2 = rtp2xyz(er_sp);
     # % er2 = zeros(pts,3);
@@ -296,14 +297,14 @@ def E_sca_SI(k, r, P, det_r, theta, phi, n1):
         e1[j, :] = r_E1[j, :] / numpy.linalg.norm(r_E1[j, :])
         e2[j, :] = numpy.cross(er[j, :], e1[j, :])
 
-    E = numpy.zeros([pts, 3])
+    E = numpy.zeros([pts, 3], dtype=numpy.complex128)
 
     for pt in numpy.arange(pts):
         erp = er[pt, :]  # e_r
         e1p = e1[pt, :]  # e_theta
         e2p = e2[pt, :]  # e_phi
-        k_sca = k * erp
-        k_Isca = [k_sca[0], k_sca[1], -k_sca[2]]
+        k_sca = (k * erp).conj()
+        k_Isca = numpy.asarray([k_sca[0], k_sca[1], -k_sca[2]], dtype=numpy.complex128).conj()
 
         #   % This is the modification was made Mitchell Short, University of Utah,
         #   % to account for the Fresnel coefficient at each angle of dipole
@@ -314,9 +315,10 @@ def E_sca_SI(k, r, P, det_r, theta, phi, n1):
         # %rp = norm(r_E(pt,:));
         rp = det_r[pt]
         for j in numpy.arange(N):
-            Pj = P[3 * j + 0:3 * j + 3]
+            Pj = P[3 * j + 0:3 * j + 3].conj()
             rj = r[j, :]
             rIj = [rj[0], rj[1], -rj[2]]
+
             E[pt, :] = E[pt, :] + numpy.exp(-1j * numpy.dot(k_sca, rj)) * (
             numpy.dot(Pj, e1p) * e1p + numpy.dot(Pj, e2p) * e2p) + numpy.exp(-1j * numpy.dot(k_Isca, rj)) * (
             refl_TM * numpy.dot(Pj, e1p) * e1p + refl_TE * numpy.dot(Pj, e2p) * e2p)

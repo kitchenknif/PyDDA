@@ -28,9 +28,9 @@ nrange = array([8, 32, 136, 280, 552, 912, 1472])
 # the corresponding effective radii of the spheres
 arange = power((3*nrange/(4*pi)), (1/3)) * d
 
-Cscat = zeros(nrange.size, dtype=numpy.complex64)
-Cext = zeros(nrange.size, dtype=numpy.complex64)
-Cabs = zeros(nrange.size, dtype=numpy.complex64)
+Cscat = zeros(nrange.size, dtype=numpy.complex128)
+Cext = zeros(nrange.size, dtype=numpy.complex128)
+Cabs = zeros(nrange.size, dtype=numpy.complex128)
 
 ix = 0  # index, counter
 for N in nrange:
@@ -39,7 +39,7 @@ for N in nrange:
     rfile = '../shape/sphere_' + str(nrange[ix]) + '.txt'
     # S = load(rfile)
     S = array(load_dipole_file(rfile))
-    r = d*asarray([S[:, 0], S[:, 1], S[:, 2]], dtype=numpy.complex64).T
+    r = d*asarray([S[:, 0], S[:, 1], S[:, 2]], dtype=numpy.complex128).T
     Ei = E_inc(E0, kvec, r)
     alph = polarizability_LDR(d, m, kvec, E0)
 

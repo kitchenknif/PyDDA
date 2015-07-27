@@ -18,7 +18,7 @@ def polarizability_CM(d, m, k0):
 
     alpha_CM = numpy.divide(numpy.multiply(msqr - 1, 3 * dcube / (4 * numpy.pi)), (msqr + 2))  # Clausius-Mossotti
 
-    alph = numpy.zeros([3 * N], dtype=numpy.complex64)
+    alph = numpy.zeros([3 * N], dtype=numpy.complex128)
 
     # assuming same polarizability in x, y & z directions
     for j in range(N):
@@ -68,7 +68,7 @@ def polarizability_LDR(d, m, kvec, E0=None):
     alpha_LDR = numpy.divide(alpha_CM, (1 + numpy.multiply((alpha_CM / dcube), (
     (b1 + msqr * b2 + msqr * b3 * S) * (k0 * d) ** 2 - 2 / 3 * 1j * k0 ** 3 * dcube))))
 
-    alph = numpy.zeros([3 * N], dtype=numpy.complex64)
+    alph = numpy.zeros([3 * N], dtype=numpy.complex128)
     # assuming same polarizability in x, y & z directions
     for j in range(N):  # TODO TEST
         alph[3 * (j - 1) + 0] = alpha_LDR[j]

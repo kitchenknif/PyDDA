@@ -47,11 +47,11 @@ Ag = catalog.getMaterial('main', 'Ag', 'Rakic')
 nBK7 = asarray([BK7.getRefractiveIndex(lam) for lam in lambda_range])
 nAg = asarray([Ag.getRefractiveIndex(lam) + Ag.getExtinctionCoefficient(lam)*1j for lam in lambda_range])
 
-Q_abs = zeros(lambda_range.size, dtype=numpy.complex64)
-Q_abs_fs = zeros(lambda_range.size, dtype=numpy.complex64)
-Q_ext = zeros(lambda_range.size, dtype=numpy.complex64)
-Q_ext_fs = zeros(lambda_range.size, dtype=numpy.complex64)
-R_p = zeros(lambda_range.size, dtype=numpy.complex64)
+Q_abs = zeros(lambda_range.size, dtype=numpy.complex128)
+Q_abs_fs = zeros(lambda_range.size, dtype=numpy.complex128)
+Q_ext = zeros(lambda_range.size, dtype=numpy.complex128)
+Q_ext_fs = zeros(lambda_range.size, dtype=numpy.complex128)
+R_p = zeros(lambda_range.size, dtype=numpy.complex128)
 
 # incident plane wave
 E0 = asarray([0, cos(gamma), sin(gamma)])  # E-field [x y z]
@@ -96,7 +96,7 @@ for lam in lambda_range:
 
 print(time.time() - start_t)
 
-#figure(1)
-#plot(lambda_range, Q_abs, lambda_range, Q_abs_fs, '--')
-#title(['gamma = ' + str(gamma * 180 / pi) + ', zgap = ' + str(zgap) + ', N = ' + str(N)])
-#show(block=True)
+figure(1)
+plot(lambda_range, Q_abs, lambda_range, Q_abs_fs, '--')
+title(['gamma = ' + str(gamma * 180 / pi) + ', zgap = ' + str(zgap) + ', N = ' + str(N)])
+show(block=True)

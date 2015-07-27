@@ -42,7 +42,7 @@ def calc_Aj(k, r, alph, j, blockdiag=True):
     # rk_to_rj = numpy.tile(r[j, :], (N, 1)) - r
     # rk_to_rj = numpy.kron(numpy.ones([N, 1]), r[j, :]) - r
 
-    Aj = numpy.zeros([3, 3 * N], dtype=numpy.complex64)  # vertical at first
+    Aj = numpy.zeros([3, 3 * N], dtype=numpy.complex128)  # vertical at first
 
     rjk = numpy.sqrt(numpy.sum(pow2(rk_to_rj), 1))
 
@@ -116,10 +116,11 @@ def E_inc(E0, kvec, r):
     # E_inc_j = E_0 exp(ik.r_j)
 
     N, cols = r.shape
-    D = numpy.ones([N], dtype=numpy.complex64)
+    D = numpy.ones([N], dtype=numpy.complex128)
     kr = [numpy.dot([kvec[0] * D[i], kvec[1] * D[i], kvec[2] * D[i]], r[i, :]) for i in numpy.arange(D.size)]
     expikr = numpy.exp(numpy.multiply(1j, kr))
-    E1 = numpy.asarray([E0[0] * expikr, E0[1] * expikr, E0[2] * expikr], dtype=numpy.complex64).T  # N x 3
+    # TODO: Get rid of asarray
+    E1 = numpy.asarray([E0[0] * expikr, E0[1] * expikr, E0[2] * expikr], dtype=numpy.complex128).T  # N x 3
 
     # Ex, Ey & Ez components laid out into a 3N x 1 vector
     # Ei = [E1(:,1); E1(:,2); E1(:,3)];
@@ -182,7 +183,7 @@ def E_sca_FF(k, r, P, r_E):
 
     M = numpy.outer(r_hat.T, r_hat) - numpy.eye(3)
     for j in range(N):
-        E = E + numpy.exp(-1j * k * numpy.dot(r_hat, r[j, :])) * numpy.dot(M, P[3 * j:3 * j + 3])
+        E = E + numpy.exp(-1j * k * numpy.dot(r_hat.conj(), r[j, :])) * numpy.dot(M.conj(), P[3 * j:3 * j + 3])
 
     E = E * (k ** 2) * numpy.exp(1j * k * r_norm) / r_norm
 
@@ -193,7 +194,7 @@ def interaction_A(k, r, alph, blockdiag=True):
     # global A
 
     N = r.shape[0]
-    A = numpy.zeros([3 * N, 3 * N], dtype=numpy.complex64)
+    A = numpy.zeros([3 * N, 3 * N], dtype=numpy.complex128)
     # subj = 0;
 
     for j in range(N):
