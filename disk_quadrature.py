@@ -52,19 +52,17 @@ def legendre_ek_compute(n):
 
     bj = numpy.zeros(n)
     for i in numpy.arange(n):
-        ip1 = numpy.float64(i + 1.)
+        ip1 = i + 1.
         bj[i] = numpy.sqrt(pow2(ip1) / (4. * pow2(ip1) - 1.))
 
     x = numpy.zeros(n)
     w = numpy.zeros(n)
     w[0] = numpy.sqrt(zemu)
 
-    x, w = imtqlx(x, bj, w)
+    x_r, w_r = imtqlx(x, bj, w)
+    w_r = pow2(w_r)
 
-    for i in numpy.arange(n):
-        w[i] = pow2(w[i])
-
-    return x, w
+    return x_r, w_r
 
 
 
@@ -116,6 +114,8 @@ def imtqlx(diagonal, subdiagonal, vec, abstol=1e-20, maxiterations = 30):
 
     if n == 1:
         return lam, qtz
+
+    subdiagonal[n-1] = 0
 
     for l in numpy.arange(1, n + 1):
         j = 0
@@ -181,7 +181,7 @@ def imtqlx(diagonal, subdiagonal, vec, abstol=1e-20, maxiterations = 30):
             subdiagonal[l - 1] = g
             subdiagonal[m - 1] = 0.0
 
-        for ii in numpy.arange(2, n + 1):
+        for ii in numpy.arange(2, m + 1):
             i = ii - 1
             k = i
             p = lam[i - 1]

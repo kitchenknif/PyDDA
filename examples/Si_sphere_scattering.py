@@ -21,7 +21,7 @@ pow2 = power_function(2)
 points = 200
 
 # Spherical particle
-lambda_range = linspace(300, 800, points)  # nm
+lambda_range = linspace(300, 826, points)  # nm
 diameter = 150  # nm
 zgap = 0  # gap btw sphere and substrate (fraction of radius)
 
@@ -31,23 +31,26 @@ k = 2 * pi  # wave number
 #N = 32
 #r0 = load_dipole_file('../shape/sphere_136.txt')
 #N = 136
-r0 = load_dipole_file('../shape/sphere_280.txt')
-N = 280
+#r0 = load_dipole_file('../shape/sphere_280.txt')
+#N = 280
 #r0 = load_dipole_file('../shape/sphere_552.txt')
 #N = 552
-#r0 = load_dipole_file('../shape/sphere_912.txt')
-#N = 912
+r0 = load_dipole_file('../shape/sphere_912.txt')
+N = 912
 # r0 = dlmread('../../shape/sphere_1472.txt'); N = 1472;
 
 
 catalog = refractiveIndex.RefractiveIndex("../../../RefractiveIndex/")
 #BK7 = catalog.getMaterial('glass', 'BK7', 'HIKARI')
-Si = catalog.getMaterial('main', 'Si', 'Aspnes')
+Si = catalog.getMaterial('main', 'Si', 'Vuye-20C')
+# Si = catalog.getMaterial('main', 'Si', 'Aspnes')
 
 #nBK7 = asarray([BK7.getRefractiveIndex(lam) for lam in lambda_range])
 nSi = asarray([Si.getRefractiveIndex(lam) + Si.getExtinctionCoefficient(lam)*1j for lam in lambda_range])
 
-I_scat = zeros(lambda_range.size)
+Cscat = zeros(lambda_range.size)
+Cext = zeros(lambda_range.size)
+Cabs = zeros(lambda_range.size)
 
 
 #
@@ -57,12 +60,10 @@ I_scat = zeros(lambda_range.size)
 #Incident field wave vector angle
 gamma_deg = 22.5
 gamma = gamma_deg / 180 * pi
-kvec = k * asarray([0, sin(gamma), -cos(gamma)])  # wave vector [x y z]
+kvec = k * asarray([0, 0, 1])  # wave vector [x y z]
 
 #Incident field polarization
-E0 = asarray([0, cos(gamma), sin(gamma)])  # p-pol
-#E0 = asarray([1, 0, 0])  # E-field [x y z]  # s-pol
-
+E0 = asarray([1, 1, 0])
 
 #
 #
@@ -99,14 +100,18 @@ for lam in lambda_range:
     A = interaction_A(k, r, alph)
     P = scipy.sparse.linalg.gmres(A, Ei)[0]
 
-    I_scat[ix] = objective_collection(k, r, P, 0.45, 100)
-
+    Cext[ix] = C_ext(k, E0, Ei, P)
+    Cabs[ix] = C_abs(k, E0, Ei, P, alph)
+    Cscat[ix] = Cext[ix] - Cabs[ix]
     ix += 1
 
 
 #write_data('Si_150nm_no_surf_p_pol.txt', lambda_range, I_scat)
 
 figure(1)
-plot(lambda_range, I_scat)
+plot(lambda_range, Cscat)
+plot(lambda_range, Cabs)
+plot(lambda_range, Cext)
+legend(['Scat', 'Abs', 'Ext'])
 #title(['gamma = ' + str(gamma * 180 / pi) + ', zgap = ' + str(zgap) + ', N = ' + str(N)])
 show(block=True)
