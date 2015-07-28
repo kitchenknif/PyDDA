@@ -1,11 +1,11 @@
 from unittest import TestCase
 from disk_quadrature import *
 from numpy import *
+
 __author__ = 'Kryosugarra'
 
 
 class TestDisk_disk_quadrature(TestCase):
-
     def test_disk_quadrature_rule(self):
         # for n in range(1, 11):
         #    w, r, t = disk_quadrature_rule(n, n)
@@ -25,9 +25,8 @@ class TestDisk_disk_quadrature(TestCase):
             for j in range(n):
                 S += w[i]
 
-        if not isclose(S, numpy.pi):
+        if not isclose(S, 1):
             self.fail()
-
 
     def test_legendre_ek_compute(self):
         n = 10
@@ -61,4 +60,24 @@ class TestDisk_disk_quadrature(TestCase):
         #     print("{}, {}, {}".format(i, lam[i], qtz[i]))
 
         if not (allclose(lam, lam_exp) and allclose(qtz, qtz_exp)):
+            self.fail()
+
+        n = 5
+        d = zeros(n)
+        for i in range(0, n):
+            d[i] = 2.0
+        e = zeros(n)
+        for i in range(0, n - 1):
+            e[i] = -1.0
+        e[n - 1] = 0.0
+        z = ones(n)
+
+        lam, qtz = imtqlx(d, e, z)
+
+        lam2 = zeros(n)
+        for i in range(0, n):
+            angle = float(i + 1) * pi / float(2 * (n + 1))
+            lam2[i] = 4.0 * (sin(angle)) ** 2
+
+        if not allclose(lam, lam2):
             self.fail()

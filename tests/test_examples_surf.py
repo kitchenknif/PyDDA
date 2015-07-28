@@ -8,7 +8,7 @@ import scipy.sparse.linalg
 import refractiveIndex
 
 
-class TestDDA_SI_integration(TestCase):
+class TestDDA_SI_cube_surf_example(TestCase):
     def test_x_phase_fn_cube(self):
         pow2 = power_function(2)
         pow1d3 = power_function(1. / 3.)
@@ -91,7 +91,7 @@ class TestDDA_SI_integration(TestCase):
         AR = interaction_AR(k1, k2, r, alph)  # non-global version, 2 copies of AR
         AR_exp = read_data('test_files/cube_surf/AR.txt')
 
-        if not numpy.allclose(AR, AR_exp, rtol=1e-5):
+        if not numpy.allclose(AR, AR_exp, rtol=1e-4):
             print('AR fail')
             self.fail()
         else:

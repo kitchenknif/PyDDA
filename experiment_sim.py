@@ -26,6 +26,8 @@ def objective_collection_si(k, dipoles, P, n1, NA, dist, samples=15):
     #Esca = numpy.zeros([pow2(samples), 3])
     Esca = dda_si_funcs.E_sca_SI(k, dipoles, P, rE[:, 0], rE[:, 1], rE[:, 2], n1)
 
+    weights = weights / (numpy.pi * pow2(maxradius))
+
     I = 0
     for n in range(samples):
         for m in range(samples):
@@ -57,6 +59,8 @@ def objective_collection(k, dipoles, P, NA, dist, samples=15):
         r_E[0], r_E[1], r_E[2] = misc.rtp2xyz(r_e[0], r_e[1], r_e[2])
         Esca[ix, 0], Esca[ix, 1], Esca[ix, 2] = dda_funcs.E_sca_FF(k, dipoles, P, r_E)
         ix += 1
+
+    weights = weights / (numpy.pi * pow2(maxradius))
 
     I = 0
     for n in range(samples):

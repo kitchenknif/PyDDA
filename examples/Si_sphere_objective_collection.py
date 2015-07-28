@@ -40,7 +40,7 @@ N = 280
 # r0 = dlmread('../../shape/sphere_1472.txt'); N = 1472;
 
 
-catalog = refractiveIndex.RefractiveIndex("../../../RefractiveIndex/")
+catalog = refractiveIndex.RefractiveIndex("../../RefractiveIndex/")
 #BK7 = catalog.getMaterial('glass', 'BK7', 'HIKARI')
 Si = catalog.getMaterial('main', 'Si', 'Aspnes')
 
@@ -60,8 +60,8 @@ gamma = gamma_deg / 180 * pi
 kvec = k * asarray([0, sin(gamma), -cos(gamma)])  # wave vector [x y z]
 
 #Incident field polarization
-E0 = asarray([0, cos(gamma), sin(gamma)])  # p-pol
-#E0 = asarray([1, 0, 0])  # E-field [x y z]  # s-pol
+#E0 = asarray([0, cos(gamma), sin(gamma)])  # p-pol
+E0 = asarray([1, 0, 0])  # E-field [x y z]  # s-pol
 
 
 #

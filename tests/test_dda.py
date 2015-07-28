@@ -319,7 +319,7 @@ class TestDDA(TestCase):
 
         A = interaction_A(k, r, alph, blockdiag)
 
-        if not (numpy.abs(A - A_exp) < 0.0012).all():
+        if not numpy.allclose(A, A_exp, 1e-4):
             print(numpy.abs(A - A_exp))
             self.fail()
 

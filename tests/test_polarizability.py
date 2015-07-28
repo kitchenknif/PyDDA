@@ -40,7 +40,7 @@ class TestPolarizability_CM(TestCase):
 
         alph=polarizability_CM(d, m, k)
 
-        if not (numpy.abs(alph - alph_exp) < 0.001).all():
+        if not numpy.allclose(alph, alph_exp):
             self.fail()
 
     def test_polarizability_LDR(self):
@@ -79,5 +79,5 @@ class TestPolarizability_CM(TestCase):
 
         alph=polarizability_LDR(d, m, kvec, E0)
 
-        if not (numpy.abs(alph - alph_exp) < 0.001).all():
+        if not numpy.allclose(alph, alph_exp):
             self.fail()

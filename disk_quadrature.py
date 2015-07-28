@@ -90,7 +90,7 @@ def legendre_ek_compute(n):
 #    The changes consist (essentially) of applying the orthogonal
 #    transformations directly to Z as they are generated.
 # TODO: Fix fortran77-style indexes
-def imtqlx(diagonal, subdiagonal, vec, abstol=1e-20, maxiterations = 30):
+def imtqlx(diagonal, subdiagonal, vec, abstol=1e-30, maxiterations = 30):
     """
     Diagonalize symmetric tridiagonal matrix
     :param diagonal: matrix diagonal, size N
@@ -177,27 +177,28 @@ def imtqlx(diagonal, subdiagonal, vec, abstol=1e-20, maxiterations = 30):
                 qtz[i] = s * qtz[i - 1] + c * f
                 qtz[i - 1] = c * qtz[i - 1] - s * f
 
-            lam[l - 1] = lam[l - 1] - p
+            lam[l - 1] -= p
             subdiagonal[l - 1] = g
             subdiagonal[m - 1] = 0.0
 
-        for ii in numpy.arange(2, m + 1):
-            i = ii - 1
-            k = i
-            p = lam[i - 1]
+    #Sort
+    for ii in numpy.arange(2, n + 1):
+        i = ii - 1
+        k = i
+        p = lam[i - 1]
 
-            for j in numpy.arange(ii, n + 1):
+        for j in numpy.arange(ii, n + 1):
 
-                if lam[j - 1] < p:
-                    k = j
-                    p = lam[j - 1]
+            if lam[j - 1] < p:
+                k = j
+                p = lam[j - 1]
 
-            if k != i:
-                lam[k - 1] = lam[i-1]
-                lam[i-1] = p
+        if k != i:
+            lam[k - 1] = lam[i-1]
+            lam[i-1] = p
 
-                p = qtz[i - 1]
-                qtz[i - 1] = qtz[k - 1]
-                qtz[k - 1] = p
+            p = qtz[i - 1]
+            qtz[i - 1] = qtz[k - 1]
+            qtz[k - 1] = p
 
     return lam, qtz
