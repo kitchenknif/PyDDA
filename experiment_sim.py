@@ -29,7 +29,7 @@ def objective_collection_si(k, dipoles, P, n1, NA, dist, samples=15):
     I = 0
     for n in range(samples):
         for m in range(samples):
-            I += numpy.dot(Esca[n*samples + m].conj(), Esca[n*samples + m])*weights[n]
+            I += pow2(k) * (rE[n*samples + m, 0]).T * numpy.dot(Esca[n*samples + m].conj(), Esca[n*samples + m])*weights[n]
     return I
 
 def objective_collection(k, dipoles, P, NA, dist, samples=15):
@@ -61,7 +61,7 @@ def objective_collection(k, dipoles, P, NA, dist, samples=15):
     I = 0
     for n in range(samples):
         for m in range(samples):
-            I += numpy.dot(Esca[n*samples + m].conj(), Esca[n*samples + m])*weights[n]
+            I += pow2(k) * (rE[n*samples + m, 0]).T * numpy.dot(Esca[n*samples + m].conj(), Esca[n*samples + m])*weights[n]
     return I
 
 
