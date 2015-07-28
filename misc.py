@@ -179,7 +179,6 @@ def unique_rows(A, return_index=False, return_inverse=False):
         return B.view(A.dtype).reshape((-1, A.shape[1]), order='C')
 
 
-
 def read_data(filename):
     try:
         f = open(filename)
@@ -195,5 +194,18 @@ def read_data(filename):
 
         return dat
 
+    except Exception as err:
+        raise err
+
+
+def write_data(filename, l, dat):
+
+    assert len(l) == len(dat)
+    try:
+        f = open(filename, 'w')
+        for i in range(len(l)):
+            f.write('{}, {}\n'.format(l[i], dat[i]))
+
+        f.close()
     except Exception as err:
         raise err
