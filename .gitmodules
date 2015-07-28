@@ -1,0 +1,3 @@
+[submodule "PyTMM"]
+	path = PyTMM
+	url = https://github.com/kitchenknif/PyTMM

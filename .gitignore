@@ -46,3 +46,4 @@ Temporary Items
 # JetBrains
 # =========================
 .idea
+__pycache__
