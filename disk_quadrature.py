@@ -1,5 +1,10 @@
+#
+# Based on LGPL code by John Burkardt.
+# https://people.sc.fsu.edu/~jburkardt/
+#
 import numpy
 import misc
+
 
 def disk_quadrature_rule(nradial, nangles):
     """
@@ -26,7 +31,13 @@ def disk_quadrature_rule(nradial, nangles):
 
     return w, r, t
 
-
+#  Reference:
+#
+#    Sylvan Elhay, Jaroslav Kautsky,
+#    Algorithm 655: IQPACK, FORTRAN Subroutines for the Weights of
+#    Interpolatory Quadrature,
+#    ACM Transactions on Mathematical Software,
+#    Volume 13, Number 4, December 1987, pages 399-415.
 def legendre_ek_compute(n):
     """
     Gauss-Legendre, Elhay-Kautsky method.
@@ -56,6 +67,30 @@ def legendre_ek_compute(n):
     return x, w
 
 
+
+#  Reference:
+#
+#    Sylvan Elhay, Jaroslav Kautsky,
+#    Algorithm 655: IQPACK, FORTRAN Subroutines for the Weights of
+#    Interpolatory Quadrature,
+#    ACM Transactions on Mathematical Software,
+#    Volume 13, Number 4, December 1987, pages 399-415.
+#
+#    Roger Martin, James Wilkinson,
+#    The Implicit QL Algorithm,
+#    Numerische Mathematik,
+#    Volume 12, Number 5, December 1968, pages 377-383.
+#
+#    This routine is a slightly modified version of the EISPACK routine to
+#    perform the implicit QL algorithm on a symmetric tridiagonal matrix.
+#
+#    The authors thank the authors of EISPACK for permission to use this
+#    routine.
+#
+#    It has been modified to produce the product Q' * Z, where Z is an input
+#    vector and Q is the orthogonal matrix diagonalizing the input matrix.
+#    The changes consist (essentially) of applying the orthogonal
+#    transformations directly to Z as they are generated.
 # TODO: Fix fortran77-style indexes
 def imtqlx(diagonal, subdiagonal, vec, abstol=1e-20, maxiterations = 30):
     """
