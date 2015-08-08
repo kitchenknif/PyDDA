@@ -12,7 +12,7 @@ from dda_si_funcs import *
 from experiment_sim import *
 
 from PyTMM import refractiveIndex
-
+import scatterer
 
 
 pow1d3 = power_function(1. / 3.)
@@ -27,17 +27,11 @@ zgap = 0  # gap btw sphere and substrate (fraction of radius)
 
 k = 2 * pi  # wave number
 
-#r0 = load_dipole_file('../shape/sphere_32.txt')
-#N = 32
-#r0 = load_dipole_file('../shape/sphere_136.txt')
-#N = 136
-r0 = load_dipole_file('../shape/sphere_280.txt')
-N = 280
-#r0 = load_dipole_file('../shape/sphere_552.txt')
-#N = 552
-#r0 = load_dipole_file('../shape/sphere_912.txt')
-#N = 912
-# r0 = dlmread('../../shape/sphere_1472.txt'); N = 1472;
+scat = scatterer.Scatterer.load_dda_si_dipole_file('../shape/sphere_32.txt')
+#scat = scatterer.Scatterer.dipole_sphere(5, 1)
+
+r0 = scat.dipoles
+N = numpy.shape(r0)[0]
 
 
 catalog = refractiveIndex.RefractiveIndex("../../RefractiveIndex/")

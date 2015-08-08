@@ -70,7 +70,7 @@ def polarizability_LDR(d, m, kvec, E0=None):
 
     alph = numpy.zeros([3 * N], dtype=numpy.complex128)
     # assuming same polarizability in x, y & z directions
-    for j in range(N):  # TODO TEST
+    for j in range(N):
         alph[3 * (j - 1) + 0] = alpha_LDR[j]
         alph[3 * (j - 1) + 1] = alpha_LDR[j]
         alph[3 * (j - 1) + 2] = alpha_LDR[j]
