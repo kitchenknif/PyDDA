@@ -105,14 +105,14 @@ def dipole_sphere(dipoles_per_dimension, radius):
 
     return dipoles, dipoles.shape[0], dipole_spacing
 
-def dipole_cube(dipoles_per_dimension, radius):
+def dipole_cube(dipoles_per_dimension, side):
     dipoles = []
-    for x in numpy.linspace(-radius, radius, dipoles_per_dimension):
-        for y in numpy.linspace(-radius, radius, dipoles_per_dimension):
-            for z in numpy.linspace(-radius, radius, dipoles_per_dimension):
+    for x in numpy.linspace(-side/2, side/2, dipoles_per_dimension):
+        for y in numpy.linspace(-side/2, side/2, dipoles_per_dimension):
+            for z in numpy.linspace(-side/2, side/2, dipoles_per_dimension):
                 dipoles.append([x, y, z])
     dipoles = numpy.asarray(dipoles)
-    dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-radius, radius, dipoles_per_dimension)))
+    dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-side/2, side/2, dipoles_per_dimension)))
     return dipoles, dipoles.shape[0], dipole_spacing
 
 def dipole_cylinder(dipoles_per_min_dimension, radius, height):
@@ -123,10 +123,10 @@ def dipole_cylinder(dipoles_per_min_dimension, radius, height):
     dipoles = []
     if radius*2 < height:
         r_dim = dipoles_per_min_dimension
-        h_dim = dipoles_per_min_dimension * int(height/(radius*2))
+        h_dim = int(dipoles_per_min_dimension * height/(radius*2))
         dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-radius, radius, r_dim)))
     else:
-        r_dim = dipoles_per_min_dimension * int(height/(radius*2))
+        r_dim = int(dipoles_per_min_dimension * height/(radius*2))
         h_dim = dipoles_per_min_dimension
         dipole_spacing = numpy.average(numpy.diff(numpy.linspace(0, height, h_dim)))
 
