@@ -14,34 +14,27 @@ from experiment_sim import *
 from PyTMM import refractiveIndex
 import scatterer
 
+#
+#
+#
 
 pow1d3 = power_function(1. / 3.)
 pow2 = power_function(2)
 pow3 = power_function(3)
 
-points = 60
-
-# Spherical particle
-lambda_range = linspace(500, 800, points)  # nm
+#
+# Particle
+#
 diameter = 130 # nm
-
-k = 2 * pi  # wave number
-
-dipoles_per_min = 7
+dipoles_per_min = 12
 r, N, d_old = scatterer.dipole_cylinder(dipoles_per_min, 130./2., 200)
-#r = misc.load_dipole_file('../shape/sphere_912.txt')
-#N = numpy.shape(r)[0]
-#d_old = 1
 
-catalog = refractiveIndex.RefractiveIndex("../../RefractiveIndex/")
+points = 60
+lambda_range = linspace(500, 800, points)  # nm
+
+catalog = refractiveIndex.RefractiveIndex("../../../RefractiveIndex/")
 Si = catalog.getMaterial('main', 'Si', 'Vuye-20C')
-
 nSi = asarray([Si.getRefractiveIndex(lam) + Si.getExtinctionCoefficient(lam)*1j for lam in lambda_range])
-
-Cscat = zeros(lambda_range.size)
-Cext = zeros(lambda_range.size)
-Cabs = zeros(lambda_range.size)
-
 
 #
 # incident plane wave
@@ -50,6 +43,7 @@ Cabs = zeros(lambda_range.size)
 #Incident field wave vector angle
 gamma_deg = 22.5
 gamma = gamma_deg / 180 * pi
+k = 2 * pi  # wave number
 kvec = k * asarray([0, 0, 1])  # wave vector [x y z]
 
 #Incident field polarization
@@ -59,6 +53,10 @@ E0 = asarray([1, 0, 0])
 #
 #
 
+Cscat = zeros(lambda_range.size)
+Cext = zeros(lambda_range.size)
+Cabs = zeros(lambda_range.size)
+
 
 ix = 0
 for lam in lambda_range:
@@ -67,9 +65,9 @@ for lam in lambda_range:
 
     m = n * ones([N])
 
-    a_eff = diameter / (2 * lam)  # effective radius in wavelengths
+    a_eff = diameter / lam  # effective radius in wavelengths
 
-    d_new = (2*a_eff) / dipoles_per_min
+    d_new = a_eff / dipoles_per_min
     r = (d_new/d_old) * r
     d_old = d_new
 
