@@ -84,31 +84,34 @@ def dipole_cylinder(dipoles_per_min_dimension, radius, height):
     dipoles = numpy.asarray(dipoles)
     return dipoles, dipoles.shape[0], dipole_spacing
 
-# def dipole_spheroid(dipoles_per_min_dimension, a, b, c):
-#     pow2 = misc.power_function(2)
-#     pow3 = misc.power_function(3)
-#     pow1d3 = misc.power_function(1./3.)
-#
-#     dipoles = []
-#
-#     if  a < b and a < c:
-#         a_dim = dipoles_per_min_dimension
-#         b_dim = numpy.rint(dipoles_per_min_dimension * height/(radius*2))
-#         c_dim =
-#         dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-radius, radius, r_dim)))
-#     else:
-#         r_dim = numpy.rint(dipoles_per_min_dimension * height/(radius*2))
-#         h_dim = dipoles_per_min_dimension
-#         dipole_spacing = numpy.average(numpy.diff(numpy.linspace(0, height, h_dim)))
-#
-#     for x in numpy.linspace(-radius, radius, dipoles_per_dimension):
-#         for y in numpy.linspace(-radius, radius, dipoles_per_dimension):
-#             for z in numpy.linspace(-radius, radius, dipoles_per_dimension):
-#                 if numpy.sqrt(pow2(x) + pow2(y) + pow2(z)) <= radius:
-#                     dipoles.append([x, y, z])
-#
-#     initial_spacing = numpy.average(numpy.diff(numpy.linspace(-radius, radius, dipoles_per_dimension)))
-#
-#     dipole_spacing = pow1d3(4 / 3 * numpy.pi / len(dipoles)) * radius
-#     dipoles = numpy.asarray(dipoles)*(dipole_spacing/initial_spacing)
-#     return dipoles, dipoles.shape[0], dipole_spacing
+
+def dipole_spheroid(dipoles_per_min_dimension, a, b):
+    pow2 = misc.power_function(2)
+    pow3 = misc.power_function(3)
+    pow1d3 = misc.power_function(1./3.)
+
+    dipoles = []
+
+    if  a < b:
+        a_dim = dipoles_per_min_dimension
+        b_dim = numpy.rint(dipoles_per_min_dimension * b/a)
+        assert not a_dim == b_dim
+        dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-a, a, a_dim)))
+    else:
+        b_dim = dipoles_per_min_dimension
+        a_dim = numpy.rint(dipoles_per_min_dimension * a/b)
+        assert not a_dim == b_dim
+        dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-b, b, b_dim)))
+
+    for x in numpy.linspace(-a, a, a_dim):
+        for y in numpy.linspace(-a, a, a_dim):
+            for z in numpy.linspace(-b, b, b_dim):
+                if numpy.sqrt(pow2(x/a) + pow2(y/a) + pow2(z/b)) <= 1:
+                    dipoles.append([x, y, z])
+
+    #initial_spacing = dipole_spacing
+    #dipole_spacing = pow1d3(4 / 3 * numpy.pi / len(dipoles) * a * a * b)
+    #dipoles = numpy.asarray(dipoles)*(dipole_spacing/initial_spacing)
+
+    dipoles = numpy.asarray(dipoles)
+    return dipoles, dipoles.shape[0], dipole_spacing
