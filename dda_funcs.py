@@ -183,7 +183,7 @@ def E_sca_FF(k, r, P, r_E):
 
     M = numpy.outer(r_hat.T, r_hat) - numpy.eye(3)
     for j in range(N):
-        E = E + numpy.exp(-1j * k * numpy.dot(r_hat.conj(), r[j, :])) * numpy.dot(M.conj(), P[3 * j:3 * j + 3])
+        E = E + numpy.exp(-1j * k * numpy.vdot(r_hat, r[j, :])) * numpy.vdot(M, P[3 * j:3 * j + 3])
 
     E = E * (k ** 2) * numpy.exp(1j * k * r_norm) / r_norm
 

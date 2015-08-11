@@ -1,7 +1,8 @@
 import numpy
 
 
-def power_function(pow): return lambda x: numpy.power(x, pow)
+def power_function(exponent):
+    return lambda x: numpy.power(x, exponent)
 
 
 def load_dipole_file(filename):

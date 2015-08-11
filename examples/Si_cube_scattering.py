@@ -1,15 +1,10 @@
 # single Si cube
 from numpy import *
-from numpy.linalg import *
 from matplotlib.pyplot import *
 import scipy.sparse.linalg
-import time
 
-from misc import *
 from polarizability_models import *
 from dda_funcs import *
-from dda_si_funcs import *
-from experiment_sim import *
 
 from PyTMM import refractiveIndex
 import scatterer

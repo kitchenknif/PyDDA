@@ -26,7 +26,7 @@ pow3 = power_function(3)
 # Particle
 #
 diameter = 130 # nm
-dipoles_per_min = 12
+dipoles_per_min = 9
 r, N, d_old = scatterer.dipole_cylinder(dipoles_per_min, 130./2., 200)
 
 points = 60
