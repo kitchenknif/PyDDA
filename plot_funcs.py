@@ -1,30 +1,18 @@
-# function plot_I(I,r,fignum,ms)
-# % I: intensity Nx3 matrix
-# % r: coordinates Nx3 matrix
-# % fignum: figure number
-# % ms: marker size
-#
-# if nargin < 2
-#   fignum = 1
-# end
-#
-# I = I/max(max(I));
-#
-# figure(fignum)
-# clf
-# cm = colormap(jet(128));
-#
-# hold on
-# for j = 1:length(I)
-#   col_ind = round(I(j)*128);
-#   if col_ind == 0
-#     col_ind = 1;
-#   end;
-#   plot3(r(j,1),r(j,2),r(j,3),'.','MarkerSize',ms,'Color',cm(col_ind,:))
-# end
-# hold off
-# zlabel('z')
-# ylabel('y')
-# xlabel('x')
-# view(45,15)
-# axis equal
+import numpy
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+
+def plot_dipoles(dipoles):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    n = 100
+    ax.scatter(dipoles[:, 0], dipoles[:, 1], dipoles[:, 2])
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.set_xlim([numpy.min(dipoles[:, 0]), numpy.max(dipoles[:, 0])])
+    ax.set_ylim([numpy.min(dipoles[:, 1]), numpy.max(dipoles[:, 1])])
+    ax.set_zlim([numpy.min(dipoles[:, 2]), numpy.max(dipoles[:, 2])])
+
+    plt.show(block=True)
