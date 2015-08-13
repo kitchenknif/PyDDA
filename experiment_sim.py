@@ -52,13 +52,11 @@ def objective_collection(k, dipoles, P, NA, dist, samples=15):
 
     # calculate scattered field as a function of angles
 
-    Esca = numpy.zeros([pow2(samples), 3])
-    ix = 0
-    for r_e in rE:
+    Esca = numpy.zeros([pow2(samples), 3], dtype=numpy.complex128)
+    for ix, r_e in enumerate(rE):
         r_E = numpy.zeros(3)
         r_E[0], r_E[1], r_E[2] = misc.rtp2xyz(r_e[0], r_e[1], r_e[2])
         Esca[ix, 0], Esca[ix, 1], Esca[ix, 2] = dda_funcs.E_sca_FF(k, dipoles, P, r_E)
-        ix += 1
 
     weights = weights / (numpy.pi * pow2(maxradius))
 

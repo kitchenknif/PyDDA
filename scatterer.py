@@ -113,16 +113,16 @@ def dipole_spheroid(dipoles_per_min_dimension, a, b):
 
     dipoles = []
 
-    if  a < b:
+    if a < b:
         a_dim = dipoles_per_min_dimension
         b_dim = numpy.rint(dipoles_per_min_dimension * b/a)
-        assert not a_dim == b_dim
-        dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-a, a, a_dim)))
+        #assert not a_dim == b_dim
+        dipole_spacing = 2*a/(a_dim-1)
     else:
         b_dim = dipoles_per_min_dimension
         a_dim = numpy.rint(dipoles_per_min_dimension * a/b)
-        assert not a_dim == b_dim
-        dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-b, b, b_dim)))
+        #assert not a_dim == b_dim
+        dipole_spacing = 2*b/(b_dim-1)
 
     for x in numpy.linspace(-a, a, a_dim):
         for y in numpy.linspace(-a, a, a_dim):

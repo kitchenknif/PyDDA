@@ -14,11 +14,10 @@ pow1d3 = power_function(1. / 3.)
 pow2 = power_function(2)
 pow3 = power_function(3)
 
-points = 60
-
+points = 150
 # Spherical particle
-lambda_range = np.linspace(400, 650, points)  # nm
-diameter = 63*2 # nm
+lambda_range = np.linspace(300, 800, points)  # nm
+diameter = 150 # nm
 
 k = 2 * np.pi  # wave number
 
@@ -67,14 +66,6 @@ for lam in lambda_range:
     d_new = pow1d3(4 / 3 * np.pi / N) * a_eff
     r = (d_new/d_old) * r
     d_old = d_new
-
-    #scat.rescale(1)
-    #s = scatterer.rescale_scatterer(scat, a_eff)
-    #d = s.dipole_spacing
-    #r = s.dipoles
-
-    #d = pow1d3((4/3)*numpy.pi*pow3(a_eff)/N)
-    #r = r0 * a_eff
 
     # incident plane wave
     Ei = E_inc(E0, kvec, r)  # direct incident field at dipoles
