@@ -5,7 +5,6 @@ from polarizability_models import *
 from numpy import *
 from misc import *
 import scipy.sparse.linalg
-import refractiveIndex
 
 
 class TestDDA_SI_cube_surf_example(TestCase):
@@ -35,7 +34,7 @@ class TestDDA_SI_cube_surf_example(TestCase):
         phi_s = pi / 2 * ones(pts)
         det_r = 100
 
-        r = load_dipole_file('../shape/cube_' + str(N) + '.txt')
+        r = load_dipole_file('./test_files/shape/cube_' + str(N) + '.txt')
         m = n3 * ones(N)
         nl = pow1d3(N)
         r[:, 2] += + nl / 2
@@ -49,7 +48,7 @@ class TestDDA_SI_cube_surf_example(TestCase):
             print('r pass')
 
         d = sides / nl / lambd
-        r = d * r
+        r *= d
 
         # incident plane wave
         E0 = [1, 0, 0]  # E-field [x y z]
@@ -78,7 +77,7 @@ class TestDDA_SI_cube_surf_example(TestCase):
         else:
             print('Ei_r pass')
 
-        alph = polarizability_CM(d, m, k)  # polarizability of dipoles
+        alph = polarizability_CM(d, m)  # polarizability of dipoles
         alph_exp = read_data('test_files/cube_surf/alph.txt').T
 
         if not numpy.allclose(alph, alph_exp, rtol=1e-4):
@@ -134,4 +133,3 @@ class TestDDA_SI_cube_surf_example(TestCase):
             print('Esca_s pass')
         E = Esca
         Is = pow2(k) * (pow2(det_r)).T * asarray([dot(a, a) for a in E])  # dot(E,E,2)
-

@@ -1,7 +1,8 @@
 import numpy
 
 
-def power_function(pow): return lambda x: numpy.power(x, pow)
+def power_function(exponent):
+    return lambda x: numpy.power(x, exponent)
 
 
 def load_dipole_file(filename):
@@ -14,39 +15,6 @@ def load_dipole_file(filename):
             dipole.append(float(d))
         dipoles.append(dipole)
     return numpy.asarray(dipoles)
-
-
-def col3to1(threecol):
-    # input vector   [v1x
-    #                 v1y
-    #                 v1z
-    #                  .
-    #                  .
-    #                  .
-    #                 vNx
-    #                 vNy
-    #                 vNz]
-    #
-    # output   [v1x v1y v1z
-    #            .   .   .
-    #            .   .   .
-    #            .   .   .
-    #           vNx vNy vNz]
-    #
-
-
-    # dummy, N = threecol.shape
-
-    # onecol = numpy.zeros(3*N, dtype=numpy.complex128)
-    # ind = numpy.multiply(range(2, N), 3)
-    # onecol[ind-2] = threecol[:, ]
-    # onecol[ind-1] = threecol[:, 2]
-    # onecol[ind] = threecol[:, 3]
-
-    n, m = threecol.shape
-    onecol = numpy.reshape(threecol, n * m)
-
-    return onecol
 
 
 def rtp2xyz(r, theta, phi):
@@ -156,6 +124,7 @@ def matchsize(A, B, C=None):
     else:
         return A, B, C
 
+
 def unique_rows(A, return_index=False, return_inverse=False):
     """
     Similar to MATLAB's unique(A, 'rows'), this returns B, I, J
@@ -168,13 +137,13 @@ def unique_rows(A, return_index=False, return_inverse=False):
     A = numpy.require(A, requirements='C')
     assert A.ndim == 2, "array must be 2-dim'l"
 
-    B = numpy.unique(A.view([('', A.dtype)]*A.shape[1]),
-               return_index=return_index,
-               return_inverse=return_inverse)
+    B = numpy.unique(A.view([('', A.dtype)] * A.shape[1]),
+                     return_index=return_index,
+                     return_inverse=return_inverse)
 
     if return_index or return_inverse:
         return (B[0].view(A.dtype).reshape((-1, A.shape[1]), order='C'),) \
-            + B[1:]
+               + B[1:]
     else:
         return B.view(A.dtype).reshape((-1, A.shape[1]), order='C')
 
@@ -199,7 +168,6 @@ def read_data(filename):
 
 
 def write_data(filename, l, dat):
-
     assert len(l) == len(dat)
     try:
         f = open(filename, 'w')

@@ -41,8 +41,7 @@ Esca_P = zeros([rang.size])
 Einc_S = zeros([rang.size])
 Einc_P = zeros([rang.size])
 
-ix = 0
-for theta in rang:
+for ix, theta in enumerate(rang):
   phi = 90  # perpendicular to x-z plane
   r_E = zeros([3])  # evaluation point
   r_E[0], r_E[1], r_E[2] = rtp2xyz(100, theta, phi)
@@ -63,8 +62,6 @@ for theta in rang:
   expikr = exp(multiply(1j, kr))
   E1 = [E0[0]*expikr, E0[1]*expikr, E0[2]*expikr]
   Einc_P[ix] = norm(E1)
-
-  ix = ix+1
 
 
 print(time.time() - tic)

@@ -20,7 +20,7 @@ def legendrerow(n, theta):
     # % PACKAGE INFO
 
     if n == 0:
-        pnm = 1 / numpy.sqrt(2 * numpy.pi) / numpy.sqrt(2);
+        pnm = 1 / numpy.sqrt(2 * numpy.pi) / numpy.sqrt(2)
         return pnm
 
     theta = numpy.transpose(theta)
@@ -50,7 +50,7 @@ def legendrerow(n, theta):
             b = numpy.sqrt((n - ii - 1) * (n + ii + 2) / (n - ii) / (n + ii + 1))
 
             pnm[jj, :] = a * ct * pnm[jj + 1, :] - b * st ** 2 * pnm[jj + 2, :]  # row recursion!
-            jj = jj - 1
+            jj -= 1
 
     ST, M = numpy.meshgrid(st, range(0, n + 1))
 
@@ -276,10 +276,9 @@ def spharm(n, m, theta, phi):
     # size(mv)
     # size(expminus)
 
-
     Yphi = 1j / 2 * numpy.sqrt((2 * n + 1) / (2 * n + 3)) * (
-    numpy.sqrt((n + mv + 1) * (n + mv + 2)).T * expminus.T * ymplus + numpy.sqrt(
-        (n - mv + 1) * (n - mv + 2)).T * expplus.T * ymminus)
+        numpy.sqrt((n + mv + 1) * (n + mv + 2)).T * expminus.T * ymplus + numpy.sqrt(
+            (n - mv + 1) * (n - mv + 2)).T * expplus.T * ymminus)
 
     Y = Y[numpy.add(mi, n)].T
     Yphi = Yphi[0, numpy.add(mi, n)].T
@@ -431,7 +430,6 @@ def vswf(n, m, kr, theta, phi, htype=0):
     # if nargin==5
     #    htype=0;
 
-
     # Convert all to column vectors
     # kr = kr.flatten(1)          # numpy.transpose(kr)
     # theta = theta.flatten(1)    # numpy.transpose(theta)
@@ -470,7 +468,7 @@ def vswf(n, m, kr, theta, phi, htype=0):
             hn = numpy.kron(numpy.ones(1, m.size * 3), sbesselh2(n, kr))
             hn1 = numpy.kron(numpy.ones(1, m.size * 3), sbesselh2(n - 1, kr))
         else:
-            kr3 = misc.threewide(kr);  # makes all these suitable length
+            kr3 = misc.threewide(kr)  # makes all these suitable length
             hn = misc.threewide(sbesselh2(n, kr))
             hn1 = misc.threewide(sbesselh2(n - 1, kr))
 
@@ -546,21 +544,9 @@ def vswf(n, m, kr, theta, phi, htype=0):
     # return M, N, M2, N2, M3, N3
 
 
-# % /* hankel evaluates hankel function of the first kind,   */
-# % /* order zero, and its derivative for complex argument z */
-# % void hankel( complex double z, complex double *h0, complex double *h0p )
 def hankel0(z):
     return scipy.special.hankel1(0, z), scipy.special.h1vp(0, z, 1)
 
 
-# bessel evaluates the zero-order bessel function */
-# and its derivative for complex argument z. */
-# void bessel( complex double z, complex double *j0, complex double *j0p )
 def bessel0(z):
-    #   int k, i, ib, iz, miz;
-    #   static int m[101], init = FALSE;
-    #   static double a1[25], a2[25];
-    #   double tst, zms;
-    #   complex double p0z, p1z, q0z, q1z, zi, zi2, zk, cz, sz, j0x, j0px;
-
     return scipy.special.jv(0, z), scipy.special.jvp(0, z, 1)

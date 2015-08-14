@@ -18,7 +18,7 @@ def disk_quadrature_rule(nradial, nangles):
     x, w = legendre_ek_compute(nradial)
 
     x = (x + 1.0)/2.0
-    w = w / 2.0
+    w /= 2.0
 
     r = numpy.zeros(nradial)
     t = numpy.zeros(nangles)

@@ -270,8 +270,8 @@ def rom1(n, nx, zph, rho, k1, k2, a, b, jh):
             #     sum[i] += t10[i];
             suminc = suminc + t10
 
-            nt = nt + 2  # nt += 2
-            z = z + dz  # z += dz
+            nt += 2  # nt += 2
+            z += dz  # z += dz
             if z > zend:
                 return suminc
             # for( i = 0; i < n; i++ )
@@ -279,7 +279,7 @@ def rom1(n, nx, zph, rho, k1, k2, a, b, jh):
             g1 = g5
 
             if (nt >= NTS) and (ns > nx):
-                ns = ns / 2
+                ns /= 2
                 nt = 1
 
             jump = 0  # jump = FALSE
@@ -319,7 +319,7 @@ def rom1(n, nx, zph, rho, k1, k2, a, b, jh):
             suminc = suminc + t20
 
             nt += 1  # nt++
-            z = z + dz  # z += dz
+            z += dz  # z += dz
             if z > zend:
                 return suminc
 
@@ -329,7 +329,7 @@ def rom1(n, nx, zph, rho, k1, k2, a, b, jh):
             g1 = g5
 
             if (nt >= NTS) and (ns > nx):
-                ns = ns / 2
+                ns /= 2
                 nt = 1
 
             jump = 0  # jump = FALSE;
@@ -338,7 +338,7 @@ def rom1(n, nx, zph, rho, k1, k2, a, b, jh):
 
         nt = 0
         if ns < NM:
-            ns = ns * 2  # ns *= 2;
+            ns *= 2  # ns *= 2;
             dz = s / ns
             dzot = dz * .5
 
@@ -372,7 +372,7 @@ def rom1(n, nx, zph, rho, k1, k2, a, b, jh):
         g1 = g5
 
         if (nt >= NTS) and (ns > nx):
-            ns = ns / 2  # ns /= 2;
+            ns /= 2  # ns /= 2;
             nt = 1
 
         jump = 0  # jump = FALSE;
@@ -464,7 +464,7 @@ def saoa(t, zph, rho, k1, k2, a, b, jh):
     com = com * den2  # com *= den2
 
     if rho != 0:  # if(rho != 0.)
-        b0p = b0p / rho
+        b0p /= rho
         answer[0] = -com * xl * (b0p + b0 * xl)  # ans[0]=-com*xl*(b0p+b0*xl)
         answer[3] = com * xl * b0p  # ans[3]=com*xl*b0p
     else:
@@ -669,7 +669,7 @@ def precalc_Somm(r, k1, k2, use_mex=False):
             # rho = round2(rho,.0001);
 
             zr[ix, :] = numpy.asarray([zph, rho])  # TODO: Get rid of asarray
-            ix = ix + 1
+            ix += 1
 
     zr0 = zr
     #zr, m, n = numpy.unique(zr, return_index=True, return_inverse=True)

@@ -3,6 +3,7 @@ import numpy
 import enum
 import misc
 
+
 # class Shape(enum.Enum):
 #     Sphere = 1
 #     Cube = 2
@@ -28,66 +29,12 @@ import misc
 #         scat = Scatterer()
 #         scat.dipoles = numpy.asarray(dipoles)
 #         return scat
-#
-#     @staticmethod
-#     def scatterer_from_shape(shape, dipoles_per_dimension=16, **kwargs):
-#         if shape == Shape.Sphere:
-#             return Scatterer.dipole_sphere(**kwargs)
-#         else:
-#             raise Exception("Unknown shape")
-#
-#
-#     @staticmethod
-#     def dipole_sphere(dipoles_per_dimension, radius):
-#         pow2 = misc.power_function(2)
-#         pow3 = misc.power_function(3)
-#         pow1d3 = misc.power_function(1./3.)
-#
-#         scat = Scatterer()
-#         dipoles = []
-#         for x in numpy.linspace(-radius, radius, dipoles_per_dimension):
-#             for y in numpy.linspace(-radius, radius, dipoles_per_dimension):
-#                 for z in numpy.linspace(-radius, radius, dipoles_per_dimension):
-#                     if numpy.sqrt(pow2(x) + pow2(y) + pow2(z)) <= radius:
-#                         dipoles.append([x, y, z])
-#         scat.dipoles = numpy.asarray(dipoles)
-#         #scat.dipole_spacing = 2*radius / (dipoles_per_dimension-1)
-#         scat.dipole_spacing = pow1d3(4 / 3 * numpy.pi / len(dipoles)) * radius
-#         scat.dipoles *= scat.dipole_spacing
-#
-#         print(pow3(scat.dipole_spacing)*len(dipoles), (4/3)*numpy.pi*pow3(radius))
-#
-#         return scat
-#
-#     @staticmethod
-#     def dipole_cube(dipoles_per_dimension, radius):
-#         scat = Scatterer()
-#         dipoles = []
-#         for x in numpy.linspace(-radius, radius, dipoles_per_dimension):
-#             for y in numpy.linspace(-radius, radius, dipoles_per_dimension):
-#                 for z in numpy.linspace(-radius, radius, dipoles_per_dimension):
-#                         dipoles.append([x, y, z])
-#         scat.dipoles = numpy.asarray(dipoles)
-#         return scat
-#
-# def rescale_scatterer(scat, a_eff):
-#     pow2 = misc.power_function(2)
-#     pow3 = misc.power_function(3)
-#     pow1d3 = misc.power_function(1./3.)
-#
-#     scat2 = Scatterer()
-#     scat2.dipoles = scat.dipoles.copy()
-#
-#     #scat2.dipoles /= scat2.dipole_spacing
-#     scat2.dipole_spacing = pow1d3(4 / 3 * numpy.pi / scat2.dipoles.shape[0]) * a_eff
-#     scat2.dipoles *= scat2.dipole_spacing
-#
-#     return scat2
+
 
 def dipole_sphere(dipoles_per_dimension, radius):
     pow2 = misc.power_function(2)
     pow3 = misc.power_function(3)
-    pow1d3 = misc.power_function(1./3.)
+    pow1d3 = misc.power_function(1. / 3.)
 
     dipoles = []
     for x in numpy.linspace(-radius, radius, dipoles_per_dimension):
@@ -96,45 +43,98 @@ def dipole_sphere(dipoles_per_dimension, radius):
                 if numpy.sqrt(pow2(x) + pow2(y) + pow2(z)) <= radius:
                     dipoles.append([x, y, z])
 
-    initial_spacing = numpy.average(numpy.diff(numpy.linspace(-radius, radius, dipoles_per_dimension)))
+    initial_spacing = 2*radius/(dipoles_per_dimension - 1)
 
     dipole_spacing = pow1d3(4 / 3 * numpy.pi / len(dipoles)) * radius
-    dipoles = numpy.asarray(dipoles)*(dipole_spacing/initial_spacing)
-
-    #print(pow3(dipole_spacing)*(dipoles.shape[0]), (4/3)*numpy.pi*pow3(radius))
-
+    dipoles = numpy.asarray(dipoles) * (dipole_spacing / initial_spacing)
     return dipoles, dipoles.shape[0], dipole_spacing
+
 
 def dipole_cube(dipoles_per_dimension, side):
     dipoles = []
-    for x in numpy.linspace(-side/2, side/2, dipoles_per_dimension):
-        for y in numpy.linspace(-side/2, side/2, dipoles_per_dimension):
-            for z in numpy.linspace(-side/2, side/2, dipoles_per_dimension):
+    for x in numpy.linspace(-side / 2, side / 2, dipoles_per_dimension):
+        for y in numpy.linspace(-side / 2, side / 2, dipoles_per_dimension):
+            for z in numpy.linspace(-side / 2, side / 2, dipoles_per_dimension):
                 dipoles.append([x, y, z])
     dipoles = numpy.asarray(dipoles)
-    dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-side/2, side/2, dipoles_per_dimension)))
+    dipole_spacing = 2*side / (dipoles_per_dimension - 1)
     return dipoles, dipoles.shape[0], dipole_spacing
+
 
 def dipole_cylinder(dipoles_per_min_dimension, radius, height):
     pow2 = misc.power_function(2)
     pow3 = misc.power_function(3)
-    pow1d3 = misc.power_function(1./3.)
+    pow1d3 = misc.power_function(1. / 3.)
 
     dipoles = []
-    if radius*2 < height:
+    if radius * 2 < height:
         r_dim = dipoles_per_min_dimension
-        h_dim = int(dipoles_per_min_dimension * height/(radius*2))
-        dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-radius, radius, r_dim)))
+        h_dim = numpy.rint(dipoles_per_min_dimension * height / (radius * 2))
+        dipole_spacing = 2 * radius / (r_dim - 1)
     else:
-        r_dim = int(dipoles_per_min_dimension * height/(radius*2))
+        r_dim = numpy.rint(dipoles_per_min_dimension * (radius * 2) / height)
         h_dim = dipoles_per_min_dimension
-        dipole_spacing = numpy.average(numpy.diff(numpy.linspace(0, height, h_dim)))
+        dipole_spacing = height / (h_dim - 1)
 
     for x in numpy.linspace(-radius, radius, r_dim):
         for y in numpy.linspace(-radius, radius, r_dim):
-            for z in numpy.linspace(0, height, h_dim):
+            for z in numpy.linspace(-height / 2, height / 2, h_dim):
                 if numpy.sqrt(pow2(x) + pow2(y)) <= radius:
                     dipoles.append([x, y, z])
+
+    dipoles = numpy.asarray(dipoles)
+    return dipoles, dipoles.shape[0], dipole_spacing
+
+
+def dipole_cylinder_r(dipoles_per_min_dimension, radius, height):
+    pow2 = misc.power_function(2)
+    pow3 = misc.power_function(3)
+    pow1d3 = misc.power_function(1. / 3.)
+
+    dipoles = []
+    r_dim = dipoles_per_min_dimension
+    h_dim = numpy.rint(dipoles_per_min_dimension * height / (radius * 2))
+    dipole_spacing = 2 * radius / (r_dim - 1)
+
+    for x in numpy.linspace(-radius, radius, r_dim):
+        for y in numpy.linspace(-radius, radius, r_dim):
+            for z in numpy.linspace(-height / 2, height / 2, h_dim):
+                if numpy.sqrt(pow2(x) + pow2(y)) <= radius:
+                    dipoles.append([x, y, z])
+
+    dipoles = numpy.asarray(dipoles)
+    return dipoles, dipoles.shape[0], dipole_spacing
+
+
+def dipole_spheroid(dipoles_per_min_dimension, a, b, testsphere=True):
+    pow2 = misc.power_function(2)
+    pow3 = misc.power_function(3)
+    pow1d3 = misc.power_function(1. / 3.)
+
+    dipoles = []
+
+    if a < b:
+        a_dim = dipoles_per_min_dimension
+        b_dim = numpy.rint(dipoles_per_min_dimension * b / a)
+        if testsphere:
+            assert not a_dim == b_dim
+        dipole_spacing = 2 * a / (a_dim - 1)
+    else:
+        b_dim = dipoles_per_min_dimension
+        a_dim = numpy.rint(dipoles_per_min_dimension * a / b)
+        if testsphere:
+            assert not a_dim == b_dim
+        dipole_spacing = 2 * b / (b_dim - 1)
+
+    for x in numpy.linspace(-a, a, a_dim):
+        for y in numpy.linspace(-a, a, a_dim):
+            for z in numpy.linspace(-b, b, b_dim):
+                if numpy.sqrt(pow2(x / a) + pow2(y / a) + pow2(z / b)) <= 1:
+                    dipoles.append([x, y, z])
+
+    initial_spacing = dipole_spacing
+    dipole_spacing = pow1d3(4 / 3 * numpy.pi / len(dipoles) * a * a * b)
+    dipoles = numpy.asarray(dipoles)*(dipole_spacing/initial_spacing)
 
     dipoles = numpy.asarray(dipoles)
     return dipoles, dipoles.shape[0], dipole_spacing
