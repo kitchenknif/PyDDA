@@ -125,7 +125,8 @@ def E_inc(E0, kvec, r):
     # Ex, Ey & Ez components laid out into a 3N x 1 vector
     # Ei = [E1(:,1); E1(:,2); E1(:,3)];
 
-    Ei = misc.col3to1(E1)
+    n, m = E1.shape
+    Ei = numpy.reshape(E1, n * m)
 
     return Ei
 

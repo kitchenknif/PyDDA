@@ -1,20 +1,48 @@
-# Clausius-Mossoti Polarizability
+import numpy
+import numpy.linalg
+import misc
 
+
+# Clausius-Mossoti Polarizability
 # Author: Vincent Loke
 # Affiliation: Physics Dept, School of Physical Sciences
 #              The University of Queensland
 # Version: Pre-release (2007)
-import numpy
-import numpy.linalg
+def polarizability_CM(d, m):
+    """Calculates Clausius-Mossoti Polarizability of dipoles.
 
+    Calcualtes Clausius-Mossoti Polarizability of dipole array according
+    to their refractive indexes `m` and lattice spacing `d`.
 
-def polarizability_CM(d, m, k0):
-    # m : N length vector containing relative refractive indices
-    # % d : lattice spacing
+    Parameters
+    ----------
+    d : float
+        Dipole lattice spacing
+    m : array_like
+        List of dipole refractive indexes
+    Returns
+    -------
+    alph: list
+        List of dipole polarizabilities
+    Notes
+    -----
+    Currently only supports isotropic polarizabilities,
+    extending to anisotropic polarizabilities should be trivial,
 
-    N = m.size  # number of dipoles
-    msqr = m ** 2
-    dcube = d ** 3
+    References
+    ----------
+    .. [1] Purcell, Edward M., and Carlton R. Pennypacker.
+    "Scattering and absorption of light by nonspherical dielectric grains."
+    The Astrophysical Journal 186 (1973): 705-714.
+
+    """
+
+    pow2 = misc.power_function(2)
+    pow3 = misc.power_function(3)
+
+    N = m.size
+    msqr = pow2(m)
+    dcube = pow3(d)
 
     alpha_CM = numpy.divide(numpy.multiply(msqr - 1, 3 * dcube / (4 * numpy.pi)), (msqr + 2))  # Clausius-Mossotti
 

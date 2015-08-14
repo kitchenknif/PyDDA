@@ -17,39 +17,6 @@ def load_dipole_file(filename):
     return numpy.asarray(dipoles)
 
 
-def col3to1(threecol):
-    # input vector   [v1x
-    #                 v1y
-    #                 v1z
-    #                  .
-    #                  .
-    #                  .
-    #                 vNx
-    #                 vNy
-    #                 vNz]
-    #
-    # output   [v1x v1y v1z
-    #            .   .   .
-    #            .   .   .
-    #            .   .   .
-    #           vNx vNy vNz]
-    #
-
-
-    # dummy, N = threecol.shape
-
-    # onecol = numpy.zeros(3*N, dtype=numpy.complex128)
-    # ind = numpy.multiply(range(2, N), 3)
-    # onecol[ind-2] = threecol[:, ]
-    # onecol[ind-1] = threecol[:, 2]
-    # onecol[ind] = threecol[:, 3]
-
-    n, m = threecol.shape
-    onecol = numpy.reshape(threecol, n * m)
-
-    return onecol
-
-
 def rtp2xyz(r, theta, phi):
     # rtp2xyz.m
     # Coordinate transformation from spherical to cartesian

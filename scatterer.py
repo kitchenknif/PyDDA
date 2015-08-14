@@ -117,12 +117,12 @@ def dipole_spheroid(dipoles_per_min_dimension, a, b):
         a_dim = dipoles_per_min_dimension
         b_dim = numpy.rint(dipoles_per_min_dimension * b/a)
         #assert not a_dim == b_dim
-        dipole_spacing = 2*a/(a_dim-1)
+        dipole_spacing = 2*a/(a_dim - 1)
     else:
         b_dim = dipoles_per_min_dimension
         a_dim = numpy.rint(dipoles_per_min_dimension * a/b)
         #assert not a_dim == b_dim
-        dipole_spacing = 2*b/(b_dim-1)
+        dipole_spacing = 2*b/(b_dim - 1)
 
     for x in numpy.linspace(-a, a, a_dim):
         for y in numpy.linspace(-a, a, a_dim):
