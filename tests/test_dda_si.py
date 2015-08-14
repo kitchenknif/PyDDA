@@ -86,7 +86,7 @@ class TestDDA_SI(TestCase):
         k_subs = k * n_subs
 
         # load sphere with coordinates of lattice spacing 1
-        r = load_dipole_file('../shape/sphere_8.txt')
+        r = load_dipole_file('./test_files/shape/sphere_8.txt')
         # the lattice spacing may be too big; just a demo
 
         N, col = r.shape  # N = no. of dipoles
@@ -130,7 +130,7 @@ class TestDDA_SI(TestCase):
         k_subs = k * n_subs
 
         # load sphere with coordinates of lattice spacing 1
-        r = load_dipole_file('../shape/sphere_8.txt')
+        r = load_dipole_file('./test_files/shape/sphere_8.txt')
         # the lattice spacing may be too big; just a demo
 
         N, col = r.shape  # N = no. of dipoles
@@ -174,7 +174,7 @@ class TestDDA_SI(TestCase):
         phi_s = pi / 2 * ones(pts)
         det_r = 100
 
-        r = load_dipole_file('../shape/cube_' + str(N) + '.txt')
+        r = load_dipole_file('./test_files/shape/cube_' + str(N) + '.txt')
         nl = pow1d3(N)
         r[:, 2] += + nl / 2
 

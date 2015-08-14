@@ -1,11 +1,7 @@
 from unittest import TestCase
 from dda_si_funcs import *
-from dda_funcs import *
-from polarizability_models import *
 from numpy import *
 from misc import *
-from PyTMM import refractiveIndex
-
 
 class TestDDA_SI_integration(TestCase):
     def test_saoa(self):
@@ -17,10 +13,6 @@ class TestDDA_SI_integration(TestCase):
         lam = 632.8  # nm, wavelength of laser
         D = 30  # nm, diameter of sphere
 
-        # refractive indices
-        catalog = refractiveIndex.RefractiveIndex()
-        Si = catalog.getMaterial('main', 'Si', 'Aspnes')
-
         # n_subs = Si.getRefractiveIndex(lam)# silicon substrate
         n_subs = 3.873960000000000 + 0.015720000000000j
 
@@ -28,7 +20,7 @@ class TestDDA_SI_integration(TestCase):
         k_subs = k * n_subs
 
         # load sphere with coordinates of lattice spacing 1
-        r = load_dipole_file('../shape/sphere_8.txt')
+        r = load_dipole_file('./test_files/shape/sphere_8.txt')
         # the lattice spacing may be too big; just a demo
 
         N, col = r.shape  # N = no. of dipoles

@@ -5,7 +5,6 @@ from polarizability_models import *
 from numpy import *
 from misc import *
 import scipy.sparse.linalg
-from PyTMM import refractiveIndex
 
 
 class TestDDA_SI_cube_surf_example(TestCase):
@@ -35,7 +34,7 @@ class TestDDA_SI_cube_surf_example(TestCase):
         phi_s = pi / 2 * ones(pts)
         det_r = 100
 
-        r = load_dipole_file('../shape/cube_' + str(N) + '.txt')
+        r = load_dipole_file('./test_files/shape/cube_' + str(N) + '.txt')
         m = n3 * ones(N)
         nl = pow1d3(N)
         r[:, 2] += + nl / 2
