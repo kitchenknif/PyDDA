@@ -9,15 +9,14 @@ from dda_funcs import *
 from polarizability_models import *
 from misc import *
 
-
 tic = time.time()
 iterative = 1  # 0: none, 1: gmres, 2: minres, 3: qmr
 
 E0 = [1, 1, 0]
 # m1 = 1.33 # relative refractive index of water
-m1 = 1.33 + .1j    # imag. component to demonstrate absorption
-k = 2*pi           # wave number
-d = 1/(abs(m1)*k)  # lattice spacing
+m1 = 1.33 + .1j  # imag. component to demonstrate absorption
+k = 2 * pi  # wave number
+d = 1 / (abs(m1) * k)  # lattice spacing
 
 # number of dipoles in the approximate sphere more is required as the
 # radius increases
@@ -26,7 +25,7 @@ nrange = array([8, 32, 136, 280, 552, 912, 1472])
 
 
 # the corresponding effective radii of the spheres
-arange = power((3*nrange/(4*pi)), (1/3)) * d
+arange = power((3 * nrange / (4 * pi)), (1 / 3)) * d
 
 Cscat = zeros(nrange.size, dtype=numpy.complex128)
 Cext = zeros(nrange.size, dtype=numpy.complex128)
@@ -34,12 +33,12 @@ Cabs = zeros(nrange.size, dtype=numpy.complex128)
 
 ix = 0  # index, counter
 for N in nrange:
-    m = m1*ones([N])
+    m = m1 * ones([N])
     kvec = [0, 0, k]
     rfile = '../shape/sphere_' + str(nrange[ix]) + '.txt'
     # S = load(rfile)
     S = array(load_dipole_file(rfile))
-    r = d*asarray([S[:, 0], S[:, 1], S[:, 2]], dtype=numpy.complex128).T
+    r = d * asarray([S[:, 0], S[:, 1], S[:, 2]], dtype=numpy.complex128).T
     Ei = E_inc(E0, kvec, r)
     alph = polarizability_LDR(d, m, kvec, E0)
 
@@ -63,15 +62,15 @@ print(time.time() - tic)
 
 # the interaction matrix may take up a lot of memory so it can be cleared
 # when no longer required
-del(A)
+del A
 
 
 # Here, we plot the efficiencies Q instead of the cross sections C
 # Q = C/(pi*r^2)
 clf()
-plot(k*arange, Cext/(pi * arange**2), '*')
-plot(k*arange, Cabs/(pi * arange**2), 'x')
-plot(k*arange, Cscat/(pi * arange**2), 'o')
+plot(k * arange, Cext / (pi * arange ** 2), '*')
+plot(k * arange, Cabs / (pi * arange ** 2), 'x')
+plot(k * arange, Cscat / (pi * arange ** 2), 'o')
 legend(['Q_{ext}', 'Q_{abs}', 'Q_{scat}'])
 ylabel('Q')
 xlabel('2\pia/\lambda')  # size parameter

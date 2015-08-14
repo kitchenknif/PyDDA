@@ -1,6 +1,7 @@
 from unittest import TestCase
 from ott_funcs import *
 from numpy import *
+
 __author__ = 'Kryosugarra'
 
 
@@ -14,16 +15,16 @@ class TestMath(TestCase):
             self.fail()
 
         n = 3
-        theta = pi/7
+        theta = pi / 7
         x = legendrerow(n, theta)
         if not (numpy.abs(x - [0.3560, 0.4289, 0.1733, 0.0341]) < 0.01).all():
             print(x)
             self.fail()
 
-        #n = 1
-        #theta = [pi/7, pi/5, pi/2]
-        #x = legendrerow(n, theta)
-        #print(x)
+            # n = 1
+            # theta = [pi/7, pi/5, pi/2]
+            # x = legendrerow(n, theta)
+            # print(x)
 
     def test_sbesselh(self):
         n = 3
@@ -79,25 +80,27 @@ class TestMath(TestCase):
 
     def test_spharm2(self):
         n = 3
-        theta = pi/7
-        phi = pi/8
+        theta = pi / 7
+        phi = pi / 8
         x = spharm2(n, theta, phi)
-        if not (numpy.abs(x - [-0.0130 + 0.0315j, 0.1226 - 0.1226j, -0.3963 + 0.1641j, 0.3560 + 0.0000j, 0.3963 + 0.1641j, 0.1226 + 0.1226j, 0.0130 + 0.0315j]) < 0.001).all():
+        if not (numpy.abs(
+                    x - [-0.0130 + 0.0315j, 0.1226 - 0.1226j, -0.3963 + 0.1641j, 0.3560 + 0.0000j, 0.3963 + 0.1641j,
+                         0.1226 + 0.1226j, 0.0130 + 0.0315j]) < 0.001).all():
             print(x)
             self.fail()
 
     def test_spharm(self):
         n = 3
         m = [1, 2, 3]
-        theta = pi/7
-        phi = pi/8
+        theta = pi / 7
+        phi = pi / 8
         x, y, y2 = spharm(n, m, theta, phi)
         if not (numpy.abs(x - [0.3963 + 0.1641j, 0.1226 + 0.1226j, 0.0130 + 0.0315j]) < 0.001).all():
             print("x", numpy.abs(x - [0.3963 + 0.1641, 0.1226 + 0.1226j, 0.0130 + 0.0315j]))
             self.fail()
 
-        if not (numpy.abs(y - [0.3164 + 0.1311j,   0.4500 + 0.4500j,   0.0812 + 0.1961j]) < 0.001).all():
-            print("y", numpy.abs(y - [0.3164 + 0.1311j,   0.4500 + 0.4500j,   0.0812 + 0.1961j]))
+        if not (numpy.abs(y - [0.3164 + 0.1311j, 0.4500 + 0.4500j, 0.0812 + 0.1961j]) < 0.001).all():
+            print("y", numpy.abs(y - [0.3164 + 0.1311j, 0.4500 + 0.4500j, 0.0812 + 0.1961j]))
             self.fail()
 
         if not (numpy.abs(y2 - [-0.3783 + 0.9133j, -0.5650 + 0.5650j, -0.2177 + 0.0902j]) < 0.001).all():
@@ -107,18 +110,24 @@ class TestMath(TestCase):
     def test_vsh(self):
         n = 3
         m = [1, 2, 3]
-        theta = pi/7
-        phi = pi/8
+        theta = pi / 7
+        phi = pi / 8
         x, y, y2 = vsh(n, m, theta, phi)
-        if not (numpy.abs(x - [0.0000 + 0.0000j,  0.0000 + 0.0000j,  0.0000 + 0.0000j, 0.3164 + 0.1311j, 0.4500 + 0.4500j, 0.0812 + 0.1961j, -0.3783 + 0.9133j, -0.5650 + 0.5650j, -0.2177 + 0.0902j]) < 0.001).all():
+        if not (numpy.abs(x - [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.3164 + 0.1311j, 0.4500 + 0.4500j,
+                               0.0812 + 0.1961j, -0.3783 + 0.9133j, -0.5650 + 0.5650j,
+                               -0.2177 + 0.0902j]) < 0.001).all():
             print(x)
             self.fail()
 
-        if not (numpy.abs(y - [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j, -0.3783 + 0.9133j, -0.5650 + 0.5650j, -0.2177 + 0.0902j, -0.3164 - 0.1311j, -0.4500 - 0.4500j, -0.0812 - 0.1961j]) < 0.001).all():
+        if not (numpy.abs(
+                    y - [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j, -0.3783 + 0.9133j, -0.5650 + 0.5650j,
+                         -0.2177 + 0.0902j, -0.3164 - 0.1311j, -0.4500 - 0.4500j, -0.0812 - 0.1961j]) < 0.001).all():
             print(y)
             self.fail()
 
-        if not (numpy.abs(y2 - [0.3963 + 0.1641j, 0.1226 + 0.1226j, 0.0130 + 0.0315j, 0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j]) < 0.001).all():
+        if not (numpy.abs(
+                    y2 - [0.3963 + 0.1641j, 0.1226 + 0.1226j, 0.0130 + 0.0315j, 0.0000 + 0.0000j, 0.0000 + 0.0000j,
+                          0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j]) < 0.001).all():
             print(y2)
             self.fail()
 
@@ -126,11 +135,10 @@ class TestMath(TestCase):
         n = 3
         m = 3
         kr = 3
-        theta = pi/7
-        phi = pi/8
+        theta = pi / 7
+        phi = pi / 8
         htype = 0
         M1, N1, M2, N2, M3, N3 = vswf(n, m, kr, theta, phi)
-
 
         if not numpy.abs(M1 - 0.0000 + 0.0000j) < 0.001:
             print("M1", numpy.abs(M1 - 0.0000 + 0.0000j))
@@ -153,14 +161,14 @@ class TestMath(TestCase):
             self.fail()
 
     def test_hankel0(self):
-        z = 3*numpy.pi/7 +9.88*1j
+        z = 3 * numpy.pi / 7 + 9.88 * 1j
         x = hankel0(z)
         if not (numpy.abs(numpy.asarray(x) - [1.2622e-05 - 2.0139e-06j, 2.0300e-06 + 1.3248e-05j]) < 0.001).all():
             print(x)
             self.fail()
 
     def test_bessel0(self):
-        z = 3*numpy.pi/7 +9.88*1j
+        z = 3 * numpy.pi / 7 + 9.88 * 1j
         x = bessel0(z)
         if not (numpy.abs(numpy.asarray(x) - [7.2467e+02 - 2.3933e+03j, -2.2764e+03 - 6.7054e+02j]) < 0.1).all():
             print(x)

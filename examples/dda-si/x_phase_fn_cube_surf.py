@@ -56,7 +56,7 @@ m = n3 * ones(N)
 nl = pow1d3(N)
 r[:, 2] += + nl / 2
 d = sides / nl / lambd
-r = d * r
+r *= d
 
 # if check_shape:
 #    r_nm = r*lambda;
@@ -84,7 +84,7 @@ E0_r = refl_TE * asarray([1, 0, 0])  # E-field [x y z]
 kvec_r = k * asarray([0, -sin(gamma), cos(gamma)])  # wave vector [x y z]
 Ei_r = E_inc(E0_r, kvec_r, r)  # reflected field at dipoles
 
-alph = polarizability_CM(d, m, k)  # polarizability of dipoles
+alph = polarizability_CM(d, m)  # polarizability of dipoles
 
 # matrix for direct and reflected interactions
 AR = interaction_AR(k1, k2, r, alph)  # non-global version, 2 copies of AR
@@ -93,11 +93,11 @@ AR = interaction_AR(k1, k2, r, alph)  # non-global version, 2 copies of AR
 #
 #
 #
-#P = linalg.solve(AR, add(Ei, Ei_r))
-#P = scipy.sparse.linalg.gmres(AR, add(Ei, Ei_r))[0]
-#P = scipy.sparse.linalg.minres(AR, add(Ei, Ei_r))[0]
+# P = linalg.solve(AR, add(Ei, Ei_r))
+# P = scipy.sparse.linalg.gmres(AR, add(Ei, Ei_r))[0]
+# P = scipy.sparse.linalg.minres(AR, add(Ei, Ei_r))[0]
 P = scipy.sparse.linalg.qmr(AR, add(Ei, Ei_r))[0]  # solve dipole moments
-#P = read_data('../tests/test_files/cube_surf/P.txt').T[0]
+# P = read_data('../tests/test_files/cube_surf/P.txt').T[0]
 
 #
 #
@@ -128,8 +128,8 @@ xlim([-90, 90])
 ylim([1e-5, 1])
 
 h = legend(['p', 's'])
-#set(h,'Location','SouthEast')
+# set(h,'Location','SouthEast')
 title('N=' + str(N))
-#print('-dpng',['data/PF_cube_N' int2str(N) '.png'])
+# print('-dpng',['data/PF_cube_N' int2str(N) '.png'])
 
 show(block=True)

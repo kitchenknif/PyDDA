@@ -4,37 +4,37 @@ from dda_funcs import *
 from polarizability_models import *
 from numpy import *
 from misc import *
-import refractiveIndex
+from PyTMM import refractiveIndex
 
 
 class TestDDA_SI_integration(TestCase):
     def test_saoa(self):
         print("rom1 test passes -> no need to test saoa")
-        #self.fail()
+        # self.fail()
 
     def test_precalc_Somm(self):
-        pow1d3 = power_function(1./3.)
+        pow1d3 = power_function(1. / 3.)
         lam = 632.8  # nm, wavelength of laser
-        D = 30         # nm, diameter of sphere
+        D = 30  # nm, diameter of sphere
 
         # refractive indices
         catalog = refractiveIndex.RefractiveIndex()
         Si = catalog.getMaterial('main', 'Si', 'Aspnes')
 
-        #n_subs = Si.getRefractiveIndex(lam)# silicon substrate
+        # n_subs = Si.getRefractiveIndex(lam)# silicon substrate
         n_subs = 3.873960000000000 + 0.015720000000000j
 
-        k = 2*pi
-        k_subs = k*n_subs
+        k = 2 * pi
+        k_subs = k * n_subs
 
         # load sphere with coordinates of lattice spacing 1
         r = load_dipole_file('../shape/sphere_8.txt')
         # the lattice spacing may be too big; just a demo
 
-        N, col = r.shape                  # N = no. of dipoles
-        a_eff = .5*D/lam                  # effective radius, relative to wavelength
-        d = pow1d3(4/3*pi/N)*a_eff        # lattice spacing based on Nd^3 = 4/3 pi r^3
-        r *= d                            # rescale sphere to wavelength units
+        N, col = r.shape  # N = no. of dipoles
+        a_eff = .5 * D / lam  # effective radius, relative to wavelength
+        d = pow1d3(4 / 3 * pi / N) * a_eff  # lattice spacing based on Nd^3 = 4/3 pi r^3
+        r *= d  # rescale sphere to wavelength units
         r[:, 2] += a_eff  # sit the sphere on the surface
 
         S, nS = precalc_Somm(r, k_subs, k)
@@ -69,18 +69,18 @@ class TestDDA_SI_integration(TestCase):
             self.fail()
 
     def test_gshank(self):
-        start = 15.034471543201017-15.034471543201017j
+        start = 15.034471543201017 - 15.034471543201017j
         dela = 9.446437070145024
         suminc = zeros([6])
         nans = 6
-        seed = asarray([-0.05307939-0.05181743j, 0.32273450+0.15004976j, 0.00000000+0.j,
-        -0.05307939-0.05181743j, -0.00279689+0.0014494j, 0.20736682+0.10180189j])
+        seed = asarray([-0.05307939 - 0.05181743j, 0.32273450 + 0.15004976j, 0.00000000 + 0.j,
+                        -0.05307939 - 0.05181743j, -0.00279689 + 0.0014494j, 0.20736682 + 0.10180189j])
         ibk = 0
-        bk = 15.034471543201017-15.034471543201017j
-        delb = 15.034471543201017-15.034471543201017j
+        bk = 15.034471543201017 - 15.034471543201017j
+        delb = 15.034471543201017 - 15.034471543201017j
         zph = 0.066513811085846
         rho = 0.0
-        k1 = 24.3408085526014+0.0987716730288631j
+        k1 = 24.3408085526014 + 0.0987716730288631j
         k2 = 6.283185307179586
         jh = 0
 
@@ -103,12 +103,11 @@ class TestDDA_SI_integration(TestCase):
         nx = 2
         zph = 0.066513811085846
         rho = 0.0
-        k1 = 24.3408085526014+0.0987716730288631j
+        k1 = 24.3408085526014 + 0.0987716730288631j
         k2 = 6.283185307179586
-        a = 15.034471543201017-15.034471543201017j
-        b = 24.48090861334604-15.034471543201017j
+        a = 15.034471543201017 - 15.034471543201017j
+        b = 24.48090861334604 - 15.034471543201017j
         jh = 0
-
 
         suminc = rom1(n, nx, zph, rho, k1, k2, a, b, jh)
 
@@ -125,8 +124,8 @@ class TestDDA_SI_integration(TestCase):
 
     def test_lambd(self):
         print("rom1 test passes -> no need to test lambd")
-        #self.fail()
+        # self.fail()
 
     def test_test(self):
         print("rom1 test passes -> no need to test test")
-        #self.fail()
+        # self.fail()

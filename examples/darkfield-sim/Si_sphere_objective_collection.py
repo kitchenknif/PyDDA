@@ -56,7 +56,7 @@ for i, lam in enumerate(lambda_range):
 
     a_eff = diameter / (2 * lam)  # effective radius in wavelengths
     d_new = pow1d3(4 / 3 * np.pi / N) * a_eff
-    r = (d_new/d_old) * r
+    r *= (d_new / d_old)
     d_old = d_new
 
     Ei = E_inc(E0, kvec, r)  # direct incident field at dipoles

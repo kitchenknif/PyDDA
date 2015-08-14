@@ -124,6 +124,7 @@ def matchsize(A, B, C=None):
     else:
         return A, B, C
 
+
 def unique_rows(A, return_index=False, return_inverse=False):
     """
     Similar to MATLAB's unique(A, 'rows'), this returns B, I, J
@@ -136,13 +137,13 @@ def unique_rows(A, return_index=False, return_inverse=False):
     A = numpy.require(A, requirements='C')
     assert A.ndim == 2, "array must be 2-dim'l"
 
-    B = numpy.unique(A.view([('', A.dtype)]*A.shape[1]),
-               return_index=return_index,
-               return_inverse=return_inverse)
+    B = numpy.unique(A.view([('', A.dtype)] * A.shape[1]),
+                     return_index=return_index,
+                     return_inverse=return_inverse)
 
     if return_index or return_inverse:
         return (B[0].view(A.dtype).reshape((-1, A.shape[1]), order='C'),) \
-            + B[1:]
+               + B[1:]
     else:
         return B.view(A.dtype).reshape((-1, A.shape[1]), order='C')
 
@@ -167,7 +168,6 @@ def read_data(filename):
 
 
 def write_data(filename, l, dat):
-
     assert len(l) == len(dat)
     try:
         f = open(filename, 'w')

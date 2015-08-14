@@ -143,8 +143,10 @@ def E_inc_vswf(n, m, r_sp):
     E_TM = numpy.zeros(3, N)
     # convert to cartesian
     # for j = 1:N
-    #   [E_TE(j,1),E_TE(j,2),E_TE(j,3)] = rtpv2xyzv(E_TE_sp(j,1),E_TE_sp(j,1),E_TE_sp(j,1),r_sp(j,1),r_sp(j,2),r_sp(j,3));
-    #   [E_TM(j,1),E_TM(j,2),E_TM(j,3)] = rtpv2xyzv(E_TM_sp(j,1),E_TM_sp(j,1),E_TM_sp(j,1),r_sp(j,1),r_sp(j,2),r_sp(j,3));
+    #   [E_TE(j,1),E_TE(j,2),E_TE(j,3)]
+    #       = rtpv2xyzv(E_TE_sp(j,1),E_TE_sp(j,1),E_TE_sp(j,1),r_sp(j,1),r_sp(j,2),r_sp(j,3))
+    #   [E_TM(j,1),E_TM(j,2),E_TM(j,3)]
+    #       = rtpv2xyzv(E_TM_sp(j,1),E_TM_sp(j,1),E_TM_sp(j,1),r_sp(j,1),r_sp(j,2),r_sp(j,3))
     # end
 
     for j in range(1, N):
@@ -184,7 +186,7 @@ def E_sca_FF(k, r, P, r_E):
 
     M = numpy.outer(r_hat.T, r_hat) - numpy.eye(3)
     for j in range(N):
-        E = E + numpy.exp(-1j * k * numpy.dot(r_hat.conj(), r[j, :])) * numpy.dot(M.conj(), P[3 * j:3 * j + 3])
+        E += numpy.exp(-1j * k * numpy.dot(r_hat.conj(), r[j, :])) * numpy.dot(M.conj(), P[3 * j:3 * j + 3])
 
     E = E * (k ** 2) * numpy.exp(1j * k * r_norm) / r_norm
 

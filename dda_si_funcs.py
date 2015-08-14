@@ -69,7 +69,7 @@ def reflection_Rjk(k1, k2, r_j, r_k, S):
 
     Gjk = numpy.asarray([[G11, G12, G13],
                          [G21, G22, G23],
-                         [G31, G32, G33]]) #TODO: Get rid of asarray
+                         [G31, G32, G33]])  # TODO: Get rid of asarray
     # % to be consistent with the Draine and Flatau interraction matrix
     # % formulation we omit the (4*pi*ep)^-1 factor
     # % (A8)
@@ -129,7 +129,7 @@ def interaction_AR(k1, k2, r, alph):
                 rjkrjk = numpy.outer(rjk_hat, rjk_hat)
 
                 Ajk = numpy.exp(1j * k0 * rjk) / rjk * (
-                pow2(k0) * (rjkrjk - I) + (1j * k0 * rjk - 1) / pow2(rjk) * (3 * rjkrjk - I))  # %Draine & Flatau
+                    pow2(k0) * (rjkrjk - I) + (1j * k0 * rjk - 1) / pow2(rjk) * (3 * rjkrjk - I))  # %Draine & Flatau
 
                 # % beta, gamma see Schmehl's thesis (1.27)
                 rjk_x = rk_to_rj[0] / rjk
@@ -148,7 +148,8 @@ def interaction_AR(k1, k2, r, alph):
                 AR[jj * 3 + 0, kk * 3 + 0] = 1. / alph[jj * 3 + 0]
                 AR[jj * 3 + 1, kk * 3 + 1] = 1. / alph[jj * 3 + 1]
                 AR[jj * 3 + 2, kk * 3 + 2] = 1. / alph[jj * 3 + 2]
-                AR[jj * 3 + 0:(jj + 1) * 3, kk * 3 + 0:(kk + 1) * 3] += Rjk # + AR[(jj) * 3 + 0:(jj + 1) * 3, kk * 3 + 0:(kk + 1) * 3]
+                AR[jj * 3 + 0:(jj + 1) * 3,
+                kk * 3 + 0:(kk + 1) * 3] += Rjk  # + AR[(jj) * 3 + 0:(jj + 1) * 3, kk * 3 + 0:(kk + 1) * 3]
     return AR
 
 
@@ -160,9 +161,9 @@ def Fresnel_coeff_n(n_r, theta):
     pow2 = misc.power_function(2)
 
     R_TM = (numpy.sqrt(1 - pow2(numpy.sin(theta) / n_r)) - n_r * numpy.cos(theta)) / (
-    numpy.sqrt(1 - pow2((numpy.sin(theta) / n_r))) + n_r * numpy.cos(theta))
+        numpy.sqrt(1 - pow2((numpy.sin(theta) / n_r))) + n_r * numpy.cos(theta))
     R_TE = (numpy.cos(theta) - n_r * numpy.sqrt(1 - pow2(numpy.sin(theta) / n_r))) / (
-    numpy.cos(theta) + n_r * numpy.sqrt(1 - pow2(numpy.sin(theta) / n_r)))
+        numpy.cos(theta) + n_r * numpy.sqrt(1 - pow2(numpy.sin(theta) / n_r)))
 
     return R_TE, R_TM
 
@@ -202,11 +203,16 @@ def evanescent_k_e(theta_1, n1, n2):
     # This is only correct beyond the critical angle;
     # the sign for k_z is opposite otherwise. However, no round-off error.
     if numpy.isreal(theta_2):
-        k2 = numpy.asarray([0, n1 * k0 * numpy.sin(theta_1), 1j * k0 * numpy.sqrt(pow2(n1 * numpy.sin(theta_1)) - pow2(n2))], dtype=numpy.complex128)
+        k2 = numpy.asarray(
+            [0, n1 * k0 * numpy.sin(theta_1), 1j * k0 * numpy.sqrt(pow2(n1 * numpy.sin(theta_1)) - pow2(n2))],
+            dtype=numpy.complex128)
     else:
-        k2 = numpy.asarray([0, n1 * k0 * numpy.sin(theta_1), -1j * k0 * numpy.sqrt(pow2(n1 * numpy.sin(theta_1)) - pow2(n2))], dtype=numpy.complex128)
+        k2 = numpy.asarray(
+            [0, n1 * k0 * numpy.sin(theta_1), -1j * k0 * numpy.sqrt(pow2(n1 * numpy.sin(theta_1)) - pow2(n2))],
+            dtype=numpy.complex128)
 
-    ep = numpy.asarray([0, 1j * numpy.sqrt(pow2(n1 / n2 * numpy.sin(theta_1)) - 1), n1 / n2 * numpy.sin(theta_1)], dtype=numpy.complex128)
+    ep = numpy.asarray([0, 1j * numpy.sqrt(pow2(n1 / n2 * numpy.sin(theta_1)) - 1), n1 / n2 * numpy.sin(theta_1)],
+                       dtype=numpy.complex128)
     es = numpy.asarray([1, 0, 0], dtype=numpy.complex128)
 
     return k2, ep, es
@@ -240,9 +246,9 @@ def evanescent_E(E1s, E1p, theta_1, n1, n2):
     k2, ep, es = evanescent_k_e(theta_1, n1, n2)
 
     T2s = (2 * n1 * numpy.cos(theta_1)) / (
-    n1 * numpy.cos(theta_1) + numpy.sqrt(pow2(n2) - pow2(n1 * numpy.sin(theta_1)) + 0j)) * E1s
+        n1 * numpy.cos(theta_1) + numpy.sqrt(pow2(n2) - pow2(n1 * numpy.sin(theta_1)) + 0j)) * E1s
     T2p = (2 * n1 * numpy.cos(theta_1)) / (
-    n2 * numpy.cos(theta_1) + (n1 / n2) * numpy.sqrt(pow2(n2) - pow2(n1 * numpy.sin(theta_1)) + 0j)) * E1p
+        n2 * numpy.cos(theta_1) + (n1 / n2) * numpy.sqrt(pow2(n2) - pow2(n1 * numpy.sin(theta_1)) + 0j)) * E1p
 
     E2s = es * T2s
     E2p = ep * T2p
@@ -265,27 +271,28 @@ def E_sca_SI(k, r, P, det_r, theta, phi, n1):
 
     N, cols = r.shape
 
-    #TODO: what does this do?
-    #rows, cols = theta.shape
-    #if cols > rows:
+    # TODO: what does this do?
+    # rows, cols = theta.shape
+    # if cols > rows:
     #    theta = numpy.reshape(theta, [cols, rows])
-    #rows, cols = phi.shape
-    #if cols > rows:
+    # rows, cols = phi.shape
+    # if cols > rows:
     #    phi = numpy.reshape(phi, [cols, rows])
-    #rows, cols = det_r.shape
-    #if cols > rows:
+    # rows, cols = det_r.shape
+    # if cols > rows:
     #    det_r = numpy.reshape(det_r, [cols, rows])
 
     # %pts = length(r_unit);
     r_sp = numpy.asarray([det_r, theta, phi], dtype=numpy.complex128).T  # TODO: Get rid of asarray
     pts, cols = r_sp.shape
     r_unit = numpy.ones([pts], dtype=numpy.complex128)
-    #er_sp = numpy.asarray([r_unit, theta, phi]).T
-    #e1_sp = numpy.asarray([r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi]).T
+    # er_sp = numpy.asarray([r_unit, theta, phi]).T
+    # e1_sp = numpy.asarray([r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi]).T
 
     # TODO: Get rid of asarray
-    r_E = numpy.asarray(misc.rtp2xyz(r_unit, theta, phi), dtype=numpy.complex128).T #er_sp
-    r_E1 = numpy.asarray(misc.rtp2xyz(r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi), dtype=numpy.complex128).T #e1_sp
+    r_E = numpy.asarray(misc.rtp2xyz(r_unit, theta, phi), dtype=numpy.complex128).T  # er_sp
+    r_E1 = numpy.asarray(misc.rtp2xyz(r_unit, theta + numpy.sign(theta) * numpy.pi / 2, phi),
+                         dtype=numpy.complex128).T  # e1_sp
     er = numpy.zeros([pts, 3], dtype=numpy.complex128)
     e1 = numpy.zeros([pts, 3], dtype=numpy.complex128)
     e2 = numpy.zeros([pts, 3], dtype=numpy.complex128)
@@ -320,8 +327,8 @@ def E_sca_SI(k, r, P, det_r, theta, phi, n1):
             rIj = [rj[0], rj[1], -rj[2]]
 
             E[pt, :] = E[pt, :] + numpy.exp(-1j * numpy.dot(k_sca, rj)) * (
-            numpy.dot(Pj, e1p) * e1p + numpy.dot(Pj, e2p) * e2p) + numpy.exp(-1j * numpy.dot(k_Isca, rj)) * (
-            refl_TM * numpy.dot(Pj, e1p) * e1p + refl_TE * numpy.dot(Pj, e2p) * e2p)
+                numpy.dot(Pj, e1p) * e1p + numpy.dot(Pj, e2p) * e2p) + numpy.exp(-1j * numpy.dot(k_Isca, rj)) * (
+                refl_TM * numpy.dot(Pj, e1p) * e1p + refl_TE * numpy.dot(Pj, e2p) * e2p)
             # TODO: Inner Outer product?
 
             # E(pt,:) = E(pt,:) + ...

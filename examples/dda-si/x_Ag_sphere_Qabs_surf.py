@@ -12,8 +12,6 @@ from dda_si_funcs import *
 
 import refractiveIndex
 
-
-
 pow1d3 = power_function(1. / 3.)
 pow2 = power_function(2)
 
@@ -31,8 +29,8 @@ k = 2 * pi  # wave number
 
 r0 = load_dipole_file('../shape/sphere_32.txt')
 N = 32
-#r0 = load_dipole_file('../shape/sphere_136.txt')
-#N = 136
+# r0 = load_dipole_file('../shape/sphere_136.txt')
+# N = 136
 # r0 = dlmread('../../shape/sphere_280.txt'); N = 280;
 # r0 = dlmread('../../shape/sphere_552.txt'); N = 552;
 # r0 = dlmread('../../shape/sphere_912.txt'); N = 912;
@@ -45,7 +43,7 @@ BK7 = catalog.getMaterial('glass', 'BK7', 'HIKARI')
 Ag = catalog.getMaterial('main', 'Ag', 'Rakic')
 
 nBK7 = asarray([BK7.getRefractiveIndex(lam) for lam in lambda_range])
-nAg = asarray([Ag.getRefractiveIndex(lam) + Ag.getExtinctionCoefficient(lam)*1j for lam in lambda_range])
+nAg = asarray([Ag.getRefractiveIndex(lam) + Ag.getExtinctionCoefficient(lam) * 1j for lam in lambda_range])
 
 Q_abs = zeros(lambda_range.size, dtype=numpy.complex128)
 Q_abs_fs = zeros(lambda_range.size, dtype=numpy.complex128)
@@ -56,7 +54,6 @@ R_p = zeros(lambda_range.size, dtype=numpy.complex128)
 # incident plane wave
 E0 = asarray([0, cos(gamma), sin(gamma)])  # E-field [x y z]
 kvec = k * asarray([0, sin(gamma), -cos(gamma)])  # wave vector [x y z]
-
 
 start_t = time.time()
 ix = 0

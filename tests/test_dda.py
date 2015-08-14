@@ -325,7 +325,7 @@ class TestDDA(TestCase):
 
     def test_E_inc_vswf(self):
         print("E_inc_vswf never used, see no reason to test ATM.")
-        #self.fail()
+        # self.fail()
 
     def test_E_sca_FF(self):
         k = 6.283185307179586

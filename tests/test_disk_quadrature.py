@@ -1,7 +1,6 @@
 from unittest import TestCase
 from disk_quadrature import *
 from numpy import *
-
 __author__ = 'Kryosugarra'
 
 
@@ -13,12 +12,10 @@ class TestDisk_disk_quadrature(TestCase):
         #        print("{}, {}, {}, {}".format(i, w[i], r[i], t[i]))
         #    print("\n")
 
-
         n = 10
         w, r, t = disk_quadrature_rule(n, n)
         # for n in range(n):
         #     print("{}; w = {}; r = {}; t: {}".format(n, w[n], r[n], ", ".join([str(j) for j in t])))
-
 
         S = 0
         for i in range(n):

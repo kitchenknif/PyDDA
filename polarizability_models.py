@@ -88,13 +88,13 @@ def polarizability_LDR(d, m, kvec, E0=None):
         e_hat = E0 / numpy.linalg.norm(E0)
         S = 0
         for j in range(3):
-            S = S + (a_hat[j] * e_hat[j]) ** 2
+            S += (a_hat[j] * e_hat[j]) ** 2
     else:  # use randomly-oriented value; also for non-plane wave
         S = .2
 
     alpha_CM = numpy.divide(3 * dcube / (4 * numpy.pi) * (msqr - 1), (msqr + 2))  # Clausius-Mossotti
     alpha_LDR = numpy.divide(alpha_CM, (1 + numpy.multiply((alpha_CM / dcube), (
-    (b1 + msqr * b2 + msqr * b3 * S) * (k0 * d) ** 2 - 2 / 3 * 1j * k0 ** 3 * dcube))))
+        (b1 + msqr * b2 + msqr * b3 * S) * (k0 * d) ** 2 - 2 / 3 * 1j * k0 ** 3 * dcube))))
 
     alph = numpy.zeros([3 * N], dtype=numpy.complex128)
     # assuming same polarizability in x, y & z directions
