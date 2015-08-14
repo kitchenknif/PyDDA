@@ -57,7 +57,7 @@ def dipole_cube(dipoles_per_dimension, side):
             for z in numpy.linspace(-side / 2, side / 2, dipoles_per_dimension):
                 dipoles.append([x, y, z])
     dipoles = numpy.asarray(dipoles)
-    dipole_spacing = numpy.average(numpy.diff(numpy.linspace(-side / 2, side / 2, dipoles_per_dimension)))
+    dipole_spacing = 2*side / (dipoles_per_dimension - 1)
     return dipoles, dipoles.shape[0], dipole_spacing
 
 
@@ -106,7 +106,7 @@ def dipole_cylinder_r(dipoles_per_min_dimension, radius, height):
     return dipoles, dipoles.shape[0], dipole_spacing
 
 
-def dipole_spheroid(dipoles_per_min_dimension, a, b):
+def dipole_spheroid(dipoles_per_min_dimension, a, b, testsphere=True):
     pow2 = misc.power_function(2)
     pow3 = misc.power_function(3)
     pow1d3 = misc.power_function(1. / 3.)
@@ -116,12 +116,14 @@ def dipole_spheroid(dipoles_per_min_dimension, a, b):
     if a < b:
         a_dim = dipoles_per_min_dimension
         b_dim = numpy.rint(dipoles_per_min_dimension * b / a)
-        # assert not a_dim == b_dim
+        if testsphere:
+            assert not a_dim == b_dim
         dipole_spacing = 2 * a / (a_dim - 1)
     else:
         b_dim = dipoles_per_min_dimension
         a_dim = numpy.rint(dipoles_per_min_dimension * a / b)
-        # assert not a_dim == b_dim
+        if testsphere:
+            assert not a_dim == b_dim
         dipole_spacing = 2 * b / (b_dim - 1)
 
     for x in numpy.linspace(-a, a, a_dim):

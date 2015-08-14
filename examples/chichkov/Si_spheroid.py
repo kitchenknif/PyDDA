@@ -16,16 +16,14 @@ pow3 = power_function(3)
 
 points = 50
 # Spherical particle
-lambda_range = np.linspace(600, 820, points)  # nm
-diameter = 97*2 # nm
-
+lambda_range = np.linspace(450, 820, points)  # nm
+min_dipoles = 13
+radius = 97
+radius_2 = 75
 k = 2 * np.pi  # wave number
 
-r, N, d_old = scatterer.dipole_sphere(9, diameter)
-plot_funcs.plot_dipoles(r)
-#r = misc.load_dipole_file('../shape/sphere_912.txt')
-#N = numpy.shape(r)[0]
-#d_old = 1
+r, N, d_old = scatterer.dipole_spheroid(min_dipoles, radius, radius_2)
+#plot_funcs.plot_dipoles(r)
 
 catalog = refractiveIndex.RefractiveIndex("../../../../RefractiveIndex/")
 Si = catalog.getMaterial('main', 'Si', 'Vuye-20C')
@@ -54,16 +52,21 @@ E0 = np.asarray([1, 0, 0])
 #
 
 
-for ix, lam in enumerate(lambda_range):
+ix = 0
+for lam in lambda_range:
     print("Calcualting wavelength {} ".format(lam))
     n = nSi[ix]  # refractive index of sphere
 
     m = n * np.ones([N])
 
-    a_eff = diameter / (2 * lam)  # effective radius in wavelengths
+    #a_eff = radius_2 / (2 * lam)  # effective radius in wavelengths
 
-    d_new = pow1d3(4 / 3 * np.pi / N) * a_eff
-    r *= (d_new / d_old)
+    #d_new = a_eff / min_dipoles
+
+    d_new = pow1d3((4 / 3) * (numpy.pi / N) * (radius * radius * radius_2 / pow3(lam)))
+
+
+    r = (d_new/d_old) * r
     d_old = d_new
 
     # incident plane wave
@@ -77,7 +80,10 @@ for ix, lam in enumerate(lambda_range):
     Cext[ix] = C_ext(k, E0, Ei, P)
     Cabs[ix] = C_abs(k, E0, Ei, P, alph)
     Cscat[ix] = Cext[ix] - Cabs[ix]
+    ix += 1
 
+
+#write_data('Si_150nm_no_surf_p_pol.txt', lambda_range, I_scat)
 
 plt.figure(1)
 plt.plot(lambda_range, Cscat)
