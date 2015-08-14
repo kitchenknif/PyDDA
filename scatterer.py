@@ -43,7 +43,7 @@ def dipole_sphere(dipoles_per_dimension, radius):
                 if numpy.sqrt(pow2(x) + pow2(y) + pow2(z)) <= radius:
                     dipoles.append([x, y, z])
 
-    initial_spacing = numpy.average(numpy.diff(numpy.linspace(-radius, radius, dipoles_per_dimension)))
+    initial_spacing = 2*radius/(dipoles_per_dimension - 1)
 
     dipole_spacing = pow1d3(4 / 3 * numpy.pi / len(dipoles)) * radius
     dipoles = numpy.asarray(dipoles) * (dipole_spacing / initial_spacing)
@@ -130,9 +130,9 @@ def dipole_spheroid(dipoles_per_min_dimension, a, b):
                 if numpy.sqrt(pow2(x / a) + pow2(y / a) + pow2(z / b)) <= 1:
                     dipoles.append([x, y, z])
 
-    # initial_spacing = dipole_spacing
-    # dipole_spacing = pow1d3(4 / 3 * numpy.pi / len(dipoles) * a * a * b)
-    # dipoles = numpy.asarray(dipoles)*(dipole_spacing/initial_spacing)
+    initial_spacing = dipole_spacing
+    dipole_spacing = pow1d3(4 / 3 * numpy.pi / len(dipoles) * a * a * b)
+    dipoles = numpy.asarray(dipoles)*(dipole_spacing/initial_spacing)
 
     dipoles = numpy.asarray(dipoles)
     return dipoles, dipoles.shape[0], dipole_spacing

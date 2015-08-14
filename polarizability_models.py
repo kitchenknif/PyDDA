@@ -1,15 +1,21 @@
+# Clausius-Mossoti & Lattice Dispersion Relations Polarizabilities
+# Original author: Vincent Loke
+# Affiliation: Physics Dept, School of Physical Sciences
+#              The University of Queensland
+# Date: 2007
+#
+# Ported to Python : Pavel Dmitriev
+# Affiliation: Metamaterials Laboratory,
+#              University of Information Technology, Mechanics and Optics,
+#              St. Petersburg, Russia
+# Date : 2015
+
 import numpy
 import numpy.linalg
 import misc
 
-
-# Clausius-Mossoti Polarizability
-# Author: Vincent Loke
-# Affiliation: Physics Dept, School of Physical Sciences
-#              The University of Queensland
-# Version: Pre-release (2007)
 def polarizability_CM(d, m):
-    """Calculates Clausius-Mossoti Polarizability of dipoles.
+    """Calculates Clausius-Mossoti polarizability of dipoles.
 
     Calcualtes Clausius-Mossoti Polarizability of dipole array according
     to their refractive indexes `m` and lattice spacing `d`.
@@ -56,32 +62,51 @@ def polarizability_CM(d, m):
 
     return alph
 
-
-# Polarizability calculation based on Draine & Goodman,
-# Beyond Clausius-Mossoti: wave propagation on a polarizable point lattice
-# and the discrete dipole approximation,
-# The Astrophysical Journal, 405:685-697, 1993 March 10
-
-# Author: Vincent Loke
-# Affiliation: Physics Dept, School of Physical Sciences
-#              The University of Queensland
-# Version: Pre-release (2007)
 def polarizability_LDR(d, m, kvec, E0=None):
-    # m : N length vector containing relative refractive indices
-    #                                (isotropic version)
-    # d : lattice spacing
-    # kvec : wave vector [kx ky kz]     e.g. [0 0 1] z-direction
+    """Calculates Lattice Dispersion Relation polarizability of dipoles.
 
-    # E0 : E-field polarization [Ex Ey Ez]   [1 0 0] x-polarized
-    #                                        [1 i 0] left-handed circ pol.
+    Calcualtes Lattice Dispersion Relation polarizability of dipole array according
+    to their refractive indexes `m` and lattice spacing `d`.
+
+    Parameters
+    ----------
+    d : float
+        Dipole lattice spacing
+    m : array_like
+        List of dipole refractive indexes
+    kvec : (3, 1) array_like
+        Wave vector [kx ky kz]     e.g. [0 0 1] z-direction
+    E0 : (3, 1) array_like
+        E-field polarization [Ex Ey Ez]   e.g. [1 0 0] x-polarized,
+        [1 i 0] left-handed circ pol.
+
+    Returns
+    -------
+    alph: list
+        List of dipole polarizabilities
+    Notes
+    -----
+    Currently only supports isotropic polarizabilities,
+    extending to anisotropic polarizabilities should be trivial,
+
+    References
+    ----------
+    .. [1] Draine, Bruce T., and Jeremy Goodman. "Beyond Clausius-Mossotti-Wave propagation on a
+    polarizable point lattice and the discrete dipole approximation."
+    The Astrophysical Journal 405 (1993): 685-697.
+
+    """
+
+    pow2 = misc.power_function(2)
+    pow3 = misc.power_function(3)
 
     k0 = 2 * numpy.pi
     N = m.size  # number of dipoles
     b1 = -1.8915316
     b2 = 0.1648469
     b3 = -1.7700004
-    msqr = m ** 2
-    dcube = d ** 3
+    msqr = pow2(m)
+    dcube = pow3(d)
 
     if E0 is not None:  # we have polarization info
         a_hat = kvec / numpy.linalg.norm(kvec)
