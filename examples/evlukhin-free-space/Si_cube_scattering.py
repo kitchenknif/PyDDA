@@ -8,6 +8,7 @@ from dda_funcs import *
 from PyTMM import refractiveIndex
 import scatterer
 import plot_funcs
+import spec
 #
 #
 #
@@ -20,40 +21,29 @@ pow3 = power_function(3)
 # Particle
 #
 diameter = 160 # nm
-r, N, d_old = scatterer.dipole_cube(7, diameter)
+r, N, d_old = scatterer.dipole_cube(5, diameter)
 #plot_funcs.plot_dipoles(r)
 
 points = 60
-lambda_range = np.linspace(500, 800, points)  # nm
+lambda_range = np.linspace(540, 820, points)  # nm
 
-catalog = refractiveIndex.RefractiveIndex("../../../../RefractiveIndex/")
+catalog = refractiveIndex.RefractiveIndex("../../../RefractiveIndex/")
 Si = catalog.getMaterial('main', 'Si', 'Vuye-20C')
 nSi = np.asarray([Si.getRefractiveIndex(lam) + Si.getExtinctionCoefficient(lam)*1j for lam in lambda_range])
 
 #
 # incident plane wave
 #
-
-#Incident field wave vector angle
-gamma_deg = 22.5
-gamma = gamma_deg / 180 * np.pi
 k = 2 * np.pi  # wave number
 kvec = k * np.asarray([0, 0, 1])  # wave vector [x y z]
-
-#Incident field polarization
-E0 = np.asarray([1, 0, 0])
-
+E0 = np.asarray([1, 0, 0])  # Incident field polarization
 #
 #
 #
 
-Cscat = np.zeros(lambda_range.size)
 Cext = np.zeros(lambda_range.size)
-Cabs = np.zeros(lambda_range.size)
 
-
-ix = 0
-for lam in lambda_range:
+for ix, lam in enumerate(lambda_range):
     print("Calcualting wavelength {} ".format(lam))
     n = nSi[ix]  # refractive index of sphere
 
@@ -73,14 +63,18 @@ for lam in lambda_range:
     A = interaction_A(k, r, alph)
     P = scipy.sparse.linalg.gmres(A, Ei)[0]
 
-    Cext[ix] = C_ext(k, E0, Ei, P)
-    Cabs[ix] = C_abs(k, E0, Ei, P, alph)
-    Cscat[ix] = Cext[ix] - Cabs[ix]
-    ix += 1
+    Cext[ix] = C_ext(k, E0, Ei, P) #* (lam/100)**2 / 100 #Convert to um**2
+
+evlukhin = spec.Spec.loadSpecFromASCII("./reference/cube_a160nm.txt", ',')
+
+Cext = numpy.divide(Cext, numpy.max(Cext))
+evlukhin.data = numpy.divide(evlukhin.data, numpy.max(evlukhin.data))
+
 
 plt.figure(1)
-plt.plot(lambda_range, Cscat)
-plt.plot(lambda_range, Cabs)
 plt.plot(lambda_range, Cext)
-plt.legend(['Scat', 'Abs', 'Ext'])
+plt.plot(evlukhin.wavelengths, evlukhin.data)
+plt.ylabel("$\sigma_{ext}, \mu m^2$")
+plt.xlabel("$wavelength, nm$")
+plt.legend(['PyDDA', 'Evlukhin'])
 plt.show(block=True)
