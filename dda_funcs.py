@@ -194,8 +194,6 @@ def E_sca_FF(k, r, P, r_E):
 
 
 def interaction_A(k, r, alph, blockdiag=True):
-    # global A
-
     N = r.shape[0]
     A = numpy.zeros([3 * N, 3 * N], dtype=numpy.complex128)
     # subj = 0;
