@@ -145,17 +145,6 @@ class TestDDA(TestCase):
         if not numpy.abs(x - 0.0230) < 0.001:
             self.fail()
 
-    def test_cross_C(self):
-        vec = numpy.asarray([1, 2, 3])
-        a = cross_C(vec)
-        a_exp = numpy.asarray([
-            [0, -3, 2],
-            [3, 0, -1],
-            [-2, 1, 0]
-        ])
-
-        if not (a == a_exp).all():
-            self.fail()
 
     def test_E_inc(self):
         k = 6.283185307179586

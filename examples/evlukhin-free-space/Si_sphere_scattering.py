@@ -23,16 +23,18 @@ diameter = 63*2 # nm
 
 k = 2 * np.pi  # wave number
 
-r, N, d_old = scatterer.dipole_sphere(11, diameter)
+r, N, d_old = scatterer.dipole_sphere(20, diameter)
 plot_funcs.plot_dipoles(r)
 
 catalog = refractiveIndex.RefractiveIndex("../../../RefractiveIndex/")
 Si = catalog.getMaterial('main', 'Si', 'Vuye-20C')
-
 nSi = np.asarray([Si.getRefractiveIndex(lam) + Si.getExtinctionCoefficient(lam)*1j for lam in lambda_range])
 
-Cext = np.zeros(lambda_range.size)
-Cext_mie = np.zeros(lambda_range.size)
+del(Si)
+del(catalog)
+
+Cext = np.zeros(lambda_range.size, dtype=numpy.float64)
+Cext_mie = np.zeros(lambda_range.size, dtype=numpy.float64)
 #
 # incident plane wave
 #
