@@ -1,6 +1,6 @@
 import numpy
 import misc
-from ott_funcs import *
+import ott_funcs
 
 
 # # gshank integrates the 6 sommerfeld integrals from start to
@@ -406,7 +406,7 @@ def saoa(t, zph, rho, k1, k2, a, b, jh):
 
     if jh == 0:
         # bessel function form
-        b0, b0p = bessel0(xl * rho)  # bessel(xl*rho, &b0, &b0p);
+        b0, b0p = ott_funcs.bessel0(xl * rho)  # bessel(xl*rho, &b0, &b0p);
         b0 *= 2.  # b0  *=2.
         b0p *= 2.  # b0p *=2.
         cgam1 = numpy.sqrt(pow2(xl) - pow2(k1))  # cgam1=csqrt(xl*xl-ck1sq)
@@ -417,7 +417,7 @@ def saoa(t, zph, rho, k1, k2, a, b, jh):
             cgam2 = numpy.abs(numpy.imag(cgam2)) * 1j  # cgam2=cmplx(0.,-fabs(cimag(cgam2)))
     else:
         # hankel function form
-        b0, b0p = hankel0(xl * rho)  # hankel(xl*rho, &b0, &b0p);
+        b0, b0p = ott_funcs.hankel0(xl * rho)  # hankel(xl*rho, &b0, &b0p);
         com = xl - k1  # com=xl-ck1;
         cgam1 = numpy.sqrt(xl + k1) * numpy.sqrt(com)  # cgam1=csqrt(xl+ck1)*csqrt(com);
         if (numpy.real(com) < 0) and (numpy.imag(com) >= 0):  # if(creal(com) < 0. && cimag(com) >= 0.)

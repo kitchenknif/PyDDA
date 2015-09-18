@@ -31,7 +31,7 @@ def C_ext(k, E0, Ei, P):
 
 
 # calculates a 3 X 3N block comprising N number of 3 X 3 Green's tensors
-def calc_Aj(k, r, alph, j, blockdiag=True):
+def calc_Aj(k, r, alph, j, blockdiag=True, *, out=None):
     pow2 = power_function(2)
     pow_m1 = power_function(-1)
     pow_m2 = power_function(-2)
@@ -42,7 +42,10 @@ def calc_Aj(k, r, alph, j, blockdiag=True):
     # rk_to_rj = numpy.tile(r[j, :], (N, 1)) - r
     # rk_to_rj = numpy.kron(numpy.ones([N, 1]), r[j, :]) - r
 
-    Aj = numpy.zeros([3, 3 * N], dtype=numpy.complex128)  # vertical at first
+    if out is None:
+        Aj = numpy.zeros([3, 3 * N], dtype=numpy.complex128)  # vertical at first
+    else:
+        Aj = out
 
     rjk = numpy.sqrt(numpy.sum(pow2(rk_to_rj), 1))
 
@@ -87,19 +90,8 @@ def calc_Aj(k, r, alph, j, blockdiag=True):
         Aj[1, j * 3 + 1] = 1 / alph[j * 3 + 1]
         Aj[2, j * 3 + 2] = 1 / alph[j * 3 + 2]
 
-    return Aj
-
-
-def cross_C(C_vec):
-    C = numpy.zeros([3, 3])
-    C[0, 1] = -C_vec[2]
-    C[0, 2] = C_vec[1]
-    C[1, 0] = C_vec[2]
-    C[1, 2] = -C_vec[0]
-    C[2, 0] = -C_vec[1]
-    C[2, 1] = C_vec[0]
-
-    return C
+    if out is None:
+        return Aj
 
 
 def E_inc(E0, kvec, r):
@@ -194,8 +186,6 @@ def E_sca_FF(k, r, P, r_E):
 
 
 def interaction_A(k, r, alph, blockdiag=True):
-    # global A
-
     N = r.shape[0]
     A = numpy.zeros([3 * N, 3 * N], dtype=numpy.complex128)
     # subj = 0;
@@ -203,7 +193,9 @@ def interaction_A(k, r, alph, blockdiag=True):
     for j in range(N):
         # subj = subj + 1
         crow = 3 * j  # 3*(j-1)
-        Aj = calc_Aj(k, r, alph, j, blockdiag)
-        A[crow:crow + 3, :] = Aj
+        #Aj = calc_Aj(k, r, alph, j, blockdiag)
+        #A[crow:crow + 3, :] = Aj
+
+        calc_Aj(k, r, alph, j, blockdiag, out=A[crow:crow + 3, :])
 
     return A

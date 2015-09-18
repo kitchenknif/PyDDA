@@ -27,18 +27,18 @@ zgap = 0  # gap btw sphere and substrate (fraction of radius)
 k = 2 * np.pi  # wave number
 
 
-r0, N, d_old = scatterer.dipole_sphere(7, diameter)
+r0, N, d_old = scatterer.dipole_sphere(10, diameter)
 r0 /= d_old
 #plot_funcs.plot_dipoles(r0)
 
 catalog = refractiveIndex.RefractiveIndex("../../../../RefractiveIndex/")
-BK7 = catalog.getMaterial('glass', 'BK7', 'HIKARI')
+BK7 = catalog.getMaterial('main', 'SiO2', 'Malitson')
 Si = catalog.getMaterial('main', 'Si', 'Aspnes')
 
 nBK7 = np.asarray([BK7.getRefractiveIndex(lam) for lam in lambda_range])
 nSi = np.asarray([Si.getRefractiveIndex(lam) + Si.getExtinctionCoefficient(lam)*1j for lam in lambda_range])
 
-I_scat = np.zeros(lambda_range.size)
+C_scat = np.zeros(lambda_range.size)
 
 #
 # incident plane wave
@@ -48,7 +48,7 @@ I_scat = np.zeros(lambda_range.size)
 E0 = np.asarray([1, 0, 0])  # E-field [x y z]
 
 # Incident field wave vector angle
-gamma_deg = 22.5
+gamma_deg = 0
 gamma = gamma_deg / 180 * np.pi
 kvec = k * np.asarray([0, np.sin(gamma), -np.cos(gamma)])  # wave vector [x y z]
 
@@ -87,10 +87,13 @@ for ix, lam in enumerate(lambda_range):
     print("Solving")
     P = scipy.sparse.linalg.gmres(AR, Ei + Ei_r)[0]  # solve dipole moments
 
-    I_scat[ix] = objective_collection_si(k, r, P, n1, 0.45, 100)
+
+    Cext = C_ext(k, E0, Ei+Ei_r, P)
+    Cabs = C_abs(k, E0, Ei+Ei_r, P, alph)
+    C_scat[ix] = Cext - Cabs
 
 
-# plt.figure(1)
-# plt.plot(lambda_range, I_scat)
-# title(['gamma = ' + str(gamma * 180 / pi) + ', zgap = ' + str(zgap) + ', N = ' + str(N)])
-# plt.show(block=True)
+plt.figure(1)
+plt.plot(lambda_range, C_scat)
+#title(['gamma = ' + str(gamma * 180 / pi) + ', zgap = ' + str(zgap) + ', N = ' + str(N)])
+plt.show(block=True)

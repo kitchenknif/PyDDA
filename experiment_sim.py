@@ -1,8 +1,12 @@
 import disk_quadrature
 import dda_si_funcs
 import dda_funcs
+import polarizability_models
+import scatterer
 import misc
 import numpy
+import scipy.sparse.linalg
+
 
 def objective_collection_si(k, dipoles, P, n1, NA, dist, samples=15):
     pow2 = misc.power_function(2)
@@ -33,6 +37,7 @@ def objective_collection_si(k, dipoles, P, n1, NA, dist, samples=15):
         for m in range(samples):
             I += pow2(k) * (rE[n*samples + m, 0]).T * numpy.dot(Esca[n*samples + m].conj(), Esca[n*samples + m])*weights[n]
     return I
+
 
 def objective_collection(k, dipoles, P, NA, dist, samples=15):
     pow2 = misc.power_function(2)
@@ -67,3 +72,49 @@ def objective_collection(k, dipoles, P, NA, dist, samples=15):
     return I
 
 
+def scatter_intensity(r, n, d, E0, kvec, k, NA=0.45, samples=100):
+        Ei = dda_funcs.E_inc(E0, kvec, r)  # direct incident field at dipoles
+        alph = polarizability_models.polarizability_LDR(d, n, kvec)  # polarizability of dipoles
+        A = dda_funcs.interaction_A(k, r, alph)
+        P = scipy.sparse.linalg.gmres(A, Ei)[0]
+
+        return objective_collection(k, r, P, NA, samples)
+
+
+def scatter_spectrum(diameter, diameter_2, n_dipoles, refractive_index, lambda_range):
+    pow1d3 = misc.power_function(1./3.)
+    pow3 = misc.power_function(3)
+
+    k = 2 * numpy.pi  # wave number
+    # r, N, d_old = scatterer.dipole_sphere(10, diameter)
+    r, N, d_old = scatterer.dipole_spheroid(n_dipoles, diameter, diameter_2, testsphere=False)
+
+    I_scat_p = numpy.zeros(lambda_range.size)
+    I_scat_s = numpy.zeros(lambda_range.size)
+
+    # Incident plane wave
+    # Incident field wave vector angle
+    gamma_deg = 22.5
+    gamma = gamma_deg / 180 * numpy.pi
+    kvec = k * numpy.asarray([0, numpy.sin(gamma), -numpy.cos(gamma)])  # wave vector [x y z]
+
+    n = refractive_index * numpy.ones([N])  # refractive index of sphere
+
+    for i, lam in enumerate(lambda_range):
+        d_new = pow1d3((4 / 3) * (numpy.pi / N) * (diameter/2 * diameter/2 * diameter_2/2 / pow3(lam)))
+        r = (d_new/d_old) * r
+        d_old = d_new
+
+        #
+        # p
+        #
+        E0 = numpy.asarray([1, 0, 0])  # E-field [x y z]  # s-pol
+        I_scat_p[i] = scatter_intensity(r, n, d_new, E0, kvec, k)
+
+        #
+        # s
+        #
+        E0 = numpy.asarray([0, numpy.cos(gamma), numpy.sin(gamma)])  # p-pol
+        I_scat_s[i] = scatter_intensity(r, n, d_new, E0, kvec, k)
+
+    return I_scat_s, I_scat_p
