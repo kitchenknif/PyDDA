@@ -5,18 +5,6 @@ def power_function(exponent):
     return lambda x: numpy.power(x, exponent)
 
 
-def load_dipole_file(filename):
-    f = open(filename, 'r')
-    lines = f.readlines()
-    dipoles = []
-    for line in lines:
-        dipole = []
-        for d in line.split(','):
-            dipole.append(float(d))
-        dipoles.append(dipole)
-    return numpy.asarray(dipoles)
-
-
 def rtp2xyz(r, theta, phi):
     # rtp2xyz.m
     # Coordinate transformation from spherical to cartesian
@@ -146,34 +134,3 @@ def unique_rows(A, return_index=False, return_inverse=False):
                + B[1:]
     else:
         return B.view(A.dtype).reshape((-1, A.shape[1]), order='C')
-
-
-def read_data(filename):
-    try:
-        f = open(filename)
-        lines = f.readlines()
-        n_rows = len(lines)
-        n_cols = len(lines[0].split(','))
-
-        dat = numpy.zeros([n_rows, n_cols], dtype=numpy.complex128)
-        for i in range(n_rows):
-            l = lines[i].split(',')
-            for j in range(n_cols):
-                dat[i, j] = complex(l[j])
-
-        return dat
-
-    except Exception as err:
-        raise err
-
-
-def write_data(filename, l, dat):
-    assert len(l) == len(dat)
-    try:
-        f = open(filename, 'w')
-        for i in range(len(l)):
-            f.write('{}, {}\n'.format(l[i], dat[i]))
-
-        f.close()
-    except Exception as err:
-        raise err

@@ -1,6 +1,8 @@
 from unittest import TestCase
 from numpy import *
 from misc import *
+from misc_io import *
+from scatterer import *
 
 __author__ = 'Kryosugarra'
 

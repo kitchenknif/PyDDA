@@ -4,6 +4,8 @@ from dda_funcs import *
 from polarizability_models import *
 from numpy import *
 from misc import *
+from misc_io import *
+from scatterer import *
 import scipy.sparse.linalg
 
 
