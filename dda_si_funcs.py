@@ -165,7 +165,7 @@ def Fresnel_coeff_n(n_r, theta):
     R_TE = (numpy.cos(theta) - n_r * numpy.sqrt(1 - pow2(numpy.sin(theta) / n_r))) / (
         numpy.cos(theta) + n_r * numpy.sqrt(1 - pow2(numpy.sin(theta) / n_r)))
 
-    return R_TE, R_TM
+    return R_TE, R_TM # R_s, R_p
 
 
 # Calculates the wave vector of the evanescent field above a flat substrate
